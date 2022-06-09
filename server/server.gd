@@ -1,8 +1,8 @@
 extends Node
 
 var network = NetworkedMultiplayerENet.new()
-var port = 3234
-var max_players = 4
+var port = 1909
+var max_players = 100
 
 var players = {}
 var ready_players = 0
@@ -32,19 +32,14 @@ remote func send_player_info(id, player_data):
 	rset("players", players)
 	rpc("update_waiting_room")
 	
-	
-remote func load_world():
-	ready_players += 1
-	if players.size() > 1 and ready_players >= players.size():
-		rpc("start_game")
-		#var world = preload("res://world/world.tscn").instance()
-		#get_tree().get_root().add_child(world)
-		
-remote func game_ended():
-	if has_node("/root/World"):
-		get_tree().get_root().get_node("World").queue_free()
-	ready_players = 0
-	
 
 remote func message_send(player_name, message):
 	rpc("message_received", player_name, message)
+
+remote func FetchServerTime(client_time):
+	var player_id = get_tree().get_rpc_sender_id()
+	rpc_id(player_id, "ReturnServerTime", OS.get_system_time_msecs(),client_time)
+
+remote func DetermineLatency(client_time):
+	var player_id = get_tree().get_rpc_sender_id()
+	rpc_id(player_id, "ReturnLatency", client_time)
