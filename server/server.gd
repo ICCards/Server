@@ -4,8 +4,8 @@ var network = NetworkedMultiplayerENet.new()
 var port = 1909
 var max_players = 100
 
-var players = {}
-var ready_players = 0
+var player_state = {}
+var world_state = {}
 
 func _ready():
 	start_server()
@@ -23,18 +23,21 @@ func _player_connected(player_id):
 	
 func _player_disconnected(player_id):
 	print("Player: " + str(player_id) + " Disconnected")
-	players.erase(player_id)
+	player_state.erase(player_id)
 	if get_tree().get_root().has_node("World"):
 		get_tree().get_root().get_node("World").delete_player(player_id)
 	
-remote func send_player_info(id, player_data):
-	players[id] = player_data
-	rset("players", players)
-	rpc("update_waiting_room")
-	
+		
+func updateState(state):
+	rpc_unreliable_id(0, "updateState", world_state)
 
-remote func message_send(player_name, message):
-	rpc("message_received", player_name, message)
+remote func message_send(message):
+	var player_id = get_tree().get_rpc_sender_id()
+	if player_state.has(player_id):
+		if player_state_collection[player_id]["T"] < message["T"]:
+			player_state_collection[player_id] = message
+	else:
+		player_state[player_id] = message
 
 remote func FetchServerTime(client_time):
 	var player_id = get_tree().get_rpc_sender_id()
