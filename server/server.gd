@@ -46,3 +46,5 @@ remote func FetchServerTime(client_time):
 remote func DetermineLatency(client_time):
 	var player_id = get_tree().get_rpc_sender_id()
 	rpc_id(player_id, "ReturnLatency", client_time)
+	
+
