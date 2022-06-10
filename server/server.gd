@@ -5,7 +5,6 @@ var port = 1909
 var max_players = 100
 
 var player_state = {}
-var world_state = {}
 
 func _ready():
 	start_server()
@@ -23,19 +22,20 @@ func _player_connected(player_id):
 	
 func _player_disconnected(player_id):
 	print("Player: " + str(player_id) + " Disconnected")
-	player_state.erase(player_id)
-	if get_tree().get_root().has_node("World"):
-		get_tree().get_root().get_node("World").delete_player(player_id)
+	if has_node(str(player_id)):
+		get_node(str(player_id)).queue_free()
+		player_state.erase(player_id)
+		rpc_id(0, "DespawnPlayer", player_id)
 	
 		
 func updateState(state):
-	rpc_unreliable_id(0, "updateState", world_state)
+	rpc_unreliable_id(0, "updateState", state)
 
 remote func message_send(message):
 	var player_id = get_tree().get_rpc_sender_id()
 	if player_state.has(player_id):
-		if player_state_collection[player_id]["T"] < message["T"]:
-			player_state_collection[player_id] = message
+		if player_state[player_id]["T"] < message["T"]:
+			player_state[player_id] = message
 	else:
 		player_state[player_id] = message
 
