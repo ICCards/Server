@@ -3,8 +3,8 @@ FROM alpine:latest
 # Environment Variables
 ENV GODOT_VERSION "3.4.4"
 ENV GODOT_EXPORT_PRESET="Linux/X11"
-ENV GODOT_GAME_NAME ""
-ENV HTTPS_GIT_REPO ""
+ENV GODOT_GAME_NAME "Server"
+ENV HTTPS_GIT_REPO "https://github.com/ICCards/Server.git"
 
 # Updates and installs to the server
 RUN apk update
