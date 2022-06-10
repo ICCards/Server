@@ -1,6 +1,6 @@
 extends Area2D
 
-onready var TreeObject = preload("res://World/TreeObject.tscn")
+onready var TreeObject = preload("res://World/Decorations/Tree/TreeObject.tscn")
 onready var World = $World
 
 var rng = RandomNumberGenerator.new()

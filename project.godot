@@ -11,12 +11,8 @@ config_version=4
 [application]
 
 config/name="Server"
-run/main_scene="res://PlayerFarm/PlayerFarm.tscn"
+run/main_scene="res://server/server.tscn"
 config/icon="res://icon.png"
-
-[autoload]
-
-Server="*res://server/server.tscn"
 
 [display]
 

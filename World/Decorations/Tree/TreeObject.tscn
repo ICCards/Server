@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://World/TreeObject.gd" type="Script" id=1]
+[ext_resource path="res://World/Decorations/Tree/TreeObject.gd" type="Script" id=1]
 
 [sub_resource type="RectangleShape2D" id=20]
 extents = Vector2( 22.7083, 28.1439 )
