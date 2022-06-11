@@ -3,7 +3,7 @@ FROM alpine:latest
 # Environment Variables
 ENV GODOT_VERSION "3.4.4"
 ENV GODOT_EXPORT_PRESET="Linux/X11"
-ENV GODOT_GAME_NAME "FaeFolk_Server"
+ENV GODOT_GAME_NAME "FaeFolk"
 ENV HTTPS_GIT_REPO "https://github.com/ICCards/Server.git"
 
 # Updates and installs to the server
@@ -43,3 +43,5 @@ RUN mv ${GODOT_GAME_NAME}.pck /godotapp/
 WORKDIR /godotapp
 run rm -f -R /godotbuildspace
 CMD godot --main-pack ${GODOT_GAME_NAME}.pck
+
+EXPOSE 65124
