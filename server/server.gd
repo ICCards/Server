@@ -1,11 +1,14 @@
 extends Node
 
-var network = NetworkedMultiplayerENet.new()
-var port = 3234
-var max_players = 4
+onready var Player = preload("res://World/Decorations/Player/Player.tscn")
 
-var players = {}
-var ready_players = 0
+var characters = ["human_male", "human_female", "lesser_demon_male", "ogre_female", "ogre_male", "water_draganoid_female", "water_draganoid_male", "seraphim_female", "seraphim_male", "goblin_male",  "goblin_female", "demi_wolf_male", "demi_wolf_female", "human_female", "lesser_demon_female", "lesser_spirit", "succubus"]
+
+var network = NetworkedMultiplayerENet.new()
+var port = 65124
+var max_players = 100
+
+var player_state = {}
 
 func _ready():
 	start_server()
@@ -20,31 +23,47 @@ func start_server():
 	
 func _player_connected(player_id):
 	print("Player: " + str(player_id) + " Connected")
+	createPlayer(player_id)
 	
 func _player_disconnected(player_id):
 	print("Player: " + str(player_id) + " Disconnected")
-	players.erase(player_id)
-	if get_tree().get_root().has_node("World"):
-		get_tree().get_root().get_node("World").delete_player(player_id)
+	if has_node(str(player_id)):
+		get_node(str(player_id)).queue_free()
+		player_state.erase(player_id)
+		rpc_id(0, "DespawnPlayer", player_id)
 	
-remote func send_player_info(id, player_data):
-	players[id] = player_data
-	rset("players", players)
-	rpc("update_waiting_room")
-	
-	
-remote func load_world():
-	ready_players += 1
-	if players.size() > 1 and ready_players >= players.size():
-		rpc("start_game")
-		#var world = preload("res://world/world.tscn").instance()
-		#get_tree().get_root().add_child(world)
+func createPlayer(player_id):
+	var player = Player.instance()
+	player.name = str(player_id)
+	characters.shuffle()
+	player.data["character"] = characters.front()
+	add_child(player,true)
 		
-remote func game_ended():
-	if has_node("/root/World"):
-		get_tree().get_root().get_node("World").queue_free()
-	ready_players = 0
-	
+func updateState(state):
+	rpc_unreliable_id(0, "updateState", state)
 
-remote func message_send(player_name, message):
-	rpc("message_received", player_name, message)
+func _spawnPlayer():
+	rpc_id(0,"SpawnPlayer")
+
+remote func message_send(message):
+	var player_id = get_tree().get_rpc_sender_id()
+	if player_state.has(player_id):
+		if player_state[player_id]["T"] < message["T"]:
+			player_state[player_id] = message
+	else:
+		player_state[player_id] = message
+
+remote func FetchServerTime(client_time):
+	var player_id = get_tree().get_rpc_sender_id()
+	print(client_time)
+	rpc_id(player_id, "ReturnServerTime", OS.get_system_time_msecs(),client_time)
+
+remote func DetermineLatency(client_time):
+	var player_id = get_tree().get_rpc_sender_id()
+	print(client_time)
+	rpc_id(player_id, "ReturnLatency", client_time)
+	
+remote func GetCharacter():
+	var player_id = get_tree().get_rpc_sender_id()
+	var player = get_node(str(player_id))
+	rpc_id(player_id, "ReceiveCharacter", player.data)

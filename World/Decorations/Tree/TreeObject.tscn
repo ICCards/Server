@@ -1,0 +1,67 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://World/Decorations/Tree/TreeObject.gd" type="Script" id=1]
+
+[sub_resource type="RectangleShape2D" id=20]
+extents = Vector2( 22.7083, 28.1439 )
+
+[sub_resource type="RectangleShape2D" id=21]
+extents = Vector2( 22.7778, 28.3507 )
+
+[node name="TreeObject" type="Area2D"]
+scale = Vector2( 0.9, 0.9 )
+script = ExtResource( 1 )
+
+[node name="StumpHurtBox" type="Area2D" parent="."]
+position = Vector2( 0, -31 )
+collision_layer = 8
+collision_mask = 0
+
+[node name="stumpHurtBox" type="CollisionShape2D" parent="StumpHurtBox"]
+position = Vector2( 0, 35.4444 )
+rotation = -1.5708
+shape = SubResource( 20 )
+disabled = true
+
+[node name="TreeHurtbox" type="Area2D" parent="."]
+position = Vector2( 0, -31 )
+collision_layer = 8
+collision_mask = 0
+
+[node name="treeHurtBox" type="CollisionShape2D" parent="TreeHurtbox"]
+position = Vector2( 0, 35.4444 )
+rotation = -1.5708
+shape = SubResource( 21 )
+
+[node name="TreeTopArea" type="Area2D" parent="."]
+position = Vector2( 0, -11 )
+collision_layer = 4096
+collision_mask = 0
+
+[node name="A" type="CollisionPolygon2D" parent="TreeTopArea"]
+polygon = PoolVector2Array( 12, -8, 11, -58, 56, -89, 56, -166, 1, -199, -61, -163, -61, -85, -14, -58, -14, -8 )
+disabled = true
+
+[node name="B" type="CollisionPolygon2D" parent="TreeTopArea"]
+polygon = PoolVector2Array( 10, -9, 10, -54, 48, -84, 48, -150, 1, -185, -49, -149, -48, -84, -13, -53, -14, -8 )
+disabled = true
+
+[node name="C" type="CollisionPolygon2D" parent="TreeTopArea"]
+polygon = PoolVector2Array( 9, -4, 9, -57, 61, -109, 60, -185, 40, -215, 1, -235, -41, -212, -54, -178, -52, -148, -71, -121, -45, -80, -13, -79, -13, -2 )
+disabled = true
+
+[node name="E" type="CollisionPolygon2D" parent="TreeTopArea"]
+polygon = PoolVector2Array( 10, -4, 9, -43, 30, -37, 39, -58, 21, -141, 0, -163, -20, -139, -33, -61, -31, -35, -9, -40, -14, -4 )
+disabled = true
+
+[node name="D" type="CollisionPolygon2D" parent="TreeTopArea"]
+position = Vector2( 2.22222, -0.111112 )
+polygon = PoolVector2Array( -5.55554, -6.77777, 5.55556, -6.77778, 37.7778, -28.8889, 50, -81.1111, 0, -151.222, -48.8889, -77.8889, -45.5556, -34.4444 )
+disabled = true
+
+[node name="occupiedTiles" type="CollisionShape2D" parent="."]
+position = Vector2( 0, 4.4444 )
+rotation = -1.5708
+shape = SubResource( 21 )
+
+[connection signal="area_entered" from="." to="." method="_on_TreeObject_area_entered"]
