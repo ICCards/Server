@@ -3,7 +3,7 @@ FROM alpine:latest
 # Environment Variables
 ENV GODOT_VERSION "3.4.4"
 ENV GODOT_EXPORT_PRESET="Linux/X11"
-ENV GODOT_GAME_NAME "Server"
+ENV GODOT_GAME_NAME "FaeFolk_Server"
 ENV HTTPS_GIT_REPO "https://github.com/ICCards/Server.git"
 
 # Updates and installs to the server
@@ -34,11 +34,12 @@ RUN mkdir /godotbuildspace
 
 # Move to the build space and export the .pck
 WORKDIR /godotbuildspace
+RUN ls
 RUN git clone ${HTTPS_GIT_REPO} .
 RUN godot --path /godotbuildspace --export-pack ${GODOT_EXPORT_PRESET} ${GODOT_GAME_NAME}.pck
-RUN mv ${Server}.pck /godotapp/
+RUN mv ${GODOT_GAME_NAME}.pck /godotapp/
 
 # Change to the godotapp space, delete the source,  and run the app
 WORKDIR /godotapp
 run rm -f -R /godotbuildspace
-CMD godot --main-pack ${Server}.pck
+CMD godot --main-pack ${GODOT_GAME_NAME}.pck
