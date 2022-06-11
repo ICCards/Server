@@ -3,7 +3,7 @@ extends Node
 var world_state = {}
 
 func _physics_process(delta):
-	if not get_parent().player_state.empty():
+	if not Server.player_state.empty():
 		world_state = get_parent().player_state.duplicate(true)
 		for player in world_state.keys():
 			world_state[player].erase("T")
