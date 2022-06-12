@@ -57,5 +57,5 @@ remote func DetermineLatency(client_time):
 	
 remote func GetCharacter():
 	var player_id = get_tree().get_rpc_sender_id()
-	var player = get_node(str(player_id))
+	var player = world.get_node(str(player_id))
 	rpc_id(player_id, "ReceiveCharacter", player.data)
