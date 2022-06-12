@@ -48,5 +48,5 @@ func disable_tree_top_collision_box():
 		$TreeTopArea/E.set_deferred("disabled", true)
 
 
-func _on_TreeObject_area_entered(area:Area2D):
+func _on_TreeObject_area_entered(_area:Area2D):
 	queue_free()
