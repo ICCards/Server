@@ -4,9 +4,12 @@ onready var TreeObject = preload("res://World/Decorations/Tree/TreeObject.tscn")
 onready var Player = preload("res://World/Decorations/Player/Player.tscn")
 onready var World = $World
 
+var _uuid = preload("res://helpers/UUID.gd")
+onready var uuid = _uuid.new()
+var type = "world"
 var rng = RandomNumberGenerator.new()
 var characters = ["human_male", "human_female", "lesser_demon_male", "ogre_female", "ogre_male", "water_draganoid_female", "water_draganoid_male", "seraphim_female", "seraphim_male", "goblin_male",  "goblin_female", "demi_wolf_male", "demi_wolf_female", "human_female", "lesser_demon_female", "lesser_spirit", "succubus"]
-var object_types = ["tree", "tree stump", "tree branch", "ore large", "ore small"]
+var decoration_types = ["tree", "tree stump", "tree branch", "ore large", "ore small"]
 var tall_grass_types = ["dark green", "green", "red", "yellow"]
 var treeTypes = ['A','B', 'C', 'D', 'E']
 var oreTypes = ["Stone", "Cobblestone"]
@@ -29,7 +32,7 @@ func _ready():
 func generate_farm():
 	for i in range(NUM_FARM_OBJECTS):
 		rng.randomize()
-		object_types.shuffle()
+		decoration_types.shuffle()
 		#object_name = object_types[0]
 		#object_variety = set_object_variety(object_name)
 		find_random_location_and_place_object(object_name, object_variety, i)
@@ -59,12 +62,17 @@ func validate_location_and_remove_tiles(loc):
 	var result = space_state.intersect_ray(loc,loc)
 	return result.empty();
 	
-func place_object(item_name, variety, loc, isFullGrowth):
-	if item_name == "tree":
+func place_object(type, variety, loc, isFullGrowth):
+	if type == "tree":
+		var health = 5
+		var name = uuid.v4()
 		var treeObject = TreeObject.instance()
+		var position = World.map_to_world(loc) + Vector2(0, 24)
+		treeObject.name = name
+		Server.decoration_state[name] = {"p":position,"n":name,"t":type,"v":variety,"g":isFullGrowth,"h":health}
 		treeObject.initialize(variety, loc, isFullGrowth)
 		add_child(treeObject)
-		treeObject.position = World.map_to_world(loc) + Vector2(0, 24)
+		treeObject.position = position
 
 
 func spawnPlayer(player_id):

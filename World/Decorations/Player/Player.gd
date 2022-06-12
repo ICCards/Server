@@ -3,7 +3,7 @@ extends Node
 var data = {}
 var rng = RandomNumberGenerator.new()
 var spawning = true
-
+var type = "player"
 #var character
 #var acc_index
 #var headAtr_index
