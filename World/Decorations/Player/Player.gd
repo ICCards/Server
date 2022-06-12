@@ -20,8 +20,5 @@ func _on_Area2D_area_entered(_area:Area2D):
         pass
         
 
-
-
-
 func _on_Player_tree_entered():
-	pass # Replace with function body.
+	spawning = false

@@ -44,9 +44,8 @@ remote func message_send(message):
 	else:
 		player_state[player_id] = message
 
-func _spawnPlayer(player_id):
-	world.spawnPlayer(player_id)
-	#rpc_id(0,"SpawnPlayer",player_id,location)
+func _spawnPlayer(player_id,location):
+	rpc_id(0,"SpawnPlayer",player_id,location)
 
 remote func FetchServerTime(client_time):
 	var player_id = get_tree().get_rpc_sender_id()

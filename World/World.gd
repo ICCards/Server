@@ -72,11 +72,13 @@ func spawnPlayer(player_id):
 	player.name = str(player_id)
 	characters.shuffle()
 	player.data["character"] = characters.front()
-	add_child(player,true)
 	rng.randomize()
 	var location = Vector2(rng.randi_range(-50, 60), rng.randi_range(8, 82))
 	player.position = World.map_to_world(location)
+	add_child(player,true)
 	print("spawning")
+	Server._spawnPlayer(player_id,player.position)
+
 		
 
 func _on_Node2D_area_entered(area:Area2D):
