@@ -1,8 +1,8 @@
 extends Node
 
-onready var Player = preload("res://World/Decorations/Player/Player.tscn")
 
-var characters = ["human_male", "human_female", "lesser_demon_male", "ogre_female", "ogre_male", "water_draganoid_female", "water_draganoid_male", "seraphim_female", "seraphim_male", "goblin_male",  "goblin_female", "demi_wolf_male", "demi_wolf_female", "human_female", "lesser_demon_female", "lesser_spirit", "succubus"]
+var world
+
 
 var network = NetworkedMultiplayerENet.new()
 var port = 65124
@@ -23,7 +23,7 @@ func start_server():
 	
 func _player_connected(player_id):
 	print("Player: " + str(player_id) + " Connected")
-	createPlayer(player_id)
+	world.spawnPlayer(player_id)
 	
 func _player_disconnected(player_id):
 	print("Player: " + str(player_id) + " Disconnected")
@@ -32,18 +32,9 @@ func _player_disconnected(player_id):
 		player_state.erase(player_id)
 		rpc_id(0, "DespawnPlayer", player_id)
 	
-func createPlayer(player_id):
-	var player = Player.instance()
-	player.name = str(player_id)
-	characters.shuffle()
-	player.data["character"] = characters.front()
-	add_child(player,true)
 		
 func updateState(state):
 	rpc_unreliable_id(0, "updateState", state)
-
-func _spawnPlayer():
-	rpc_id(0,"SpawnPlayer")
 
 remote func message_send(message):
 	var player_id = get_tree().get_rpc_sender_id()
@@ -53,14 +44,16 @@ remote func message_send(message):
 	else:
 		player_state[player_id] = message
 
+func _spawnPlayer(player_id):
+	world.spawnPlayer(player_id)
+	#rpc_id(0,"SpawnPlayer",player_id,location)
+
 remote func FetchServerTime(client_time):
 	var player_id = get_tree().get_rpc_sender_id()
-	print(client_time)
 	rpc_id(player_id, "ReturnServerTime", OS.get_system_time_msecs(),client_time)
 
 remote func DetermineLatency(client_time):
 	var player_id = get_tree().get_rpc_sender_id()
-	print(client_time)
 	rpc_id(player_id, "ReturnLatency", client_time)
 	
 remote func GetCharacter():

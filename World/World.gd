@@ -1,15 +1,16 @@
 extends Area2D
 
 onready var TreeObject = preload("res://World/Decorations/Tree/TreeObject.tscn")
+onready var Player = preload("res://World/Decorations/Player/Player.tscn")
 onready var World = $World
 
 var rng = RandomNumberGenerator.new()
-
-onready var object_types = ["tree", "tree stump", "tree branch", "ore large", "ore small"]
-onready var tall_grass_types = ["dark green", "green", "red", "yellow"]
-onready var treeTypes = ['A','B', 'C', 'D', 'E']
-onready var oreTypes = ["Stone", "Cobblestone"]
-onready var randomBorderTiles = [Vector2(0, 1), Vector2(1, 1), Vector2(-1, 1), Vector2(0, -1), Vector2(-1, -1), Vector2(1, -1), Vector2(1, 0), Vector2(-1, 0)]
+var characters = ["human_male", "human_female", "lesser_demon_male", "ogre_female", "ogre_male", "water_draganoid_female", "water_draganoid_male", "seraphim_female", "seraphim_male", "goblin_male",  "goblin_female", "demi_wolf_male", "demi_wolf_female", "human_female", "lesser_demon_female", "lesser_spirit", "succubus"]
+var object_types = ["tree", "tree stump", "tree branch", "ore large", "ore small"]
+var tall_grass_types = ["dark green", "green", "red", "yellow"]
+var treeTypes = ['A','B', 'C', 'D', 'E']
+var oreTypes = ["Stone", "Cobblestone"]
+var randomBorderTiles = [Vector2(0, 1), Vector2(1, 1), Vector2(-1, 1), Vector2(0, -1), Vector2(-1, -1), Vector2(1, -1), Vector2(1, 0), Vector2(-1, 0)]
 
 var object_name = "tree"
 var position_of_object
@@ -22,6 +23,7 @@ const NUM_FLOWER_TILES = 250
 const MAX_GRASS_BUNCH_SIZE = 24
 
 func _ready():
+	Server.world = self
 	generate_farm()
 
 func generate_farm():
@@ -46,8 +48,9 @@ func set_object_variety(name):
 func find_random_location_and_place_object(name, variety, i):
 	rng.randomize()
 	var location = Vector2(rng.randi_range(-50, 60), rng.randi_range(8, 82))
-	if validate_location_and_remove_tiles(location):
-		place_object("tree", variety, location, true)
+	place_object("tree", variety, location, true)
+	#if validate_location_and_remove_tiles(location):
+		#place_object("tree", variety, location, true)
 	#PlayerFarmApi.player_farm_objects.append([name, variety, location, true])
 
 func validate_location_and_remove_tiles(loc):
@@ -60,12 +63,21 @@ func place_object(item_name, variety, loc, isFullGrowth):
 	if item_name == "tree":
 		var treeObject = TreeObject.instance()
 		treeObject.initialize(variety, loc, isFullGrowth)
-		call_deferred("add_child", treeObject)
+		add_child(treeObject)
 		treeObject.position = World.map_to_world(loc) + Vector2(0, 24)
-		if overlaps_area(treeObject):
-			print(true)
 
 
+func spawnPlayer(player_id):
+	var player = Player.instance()
+	player.name = str(player_id)
+	characters.shuffle()
+	player.data["character"] = characters.front()
+	add_child(player,true)
+	rng.randomize()
+	var location = Vector2(rng.randi_range(-50, 60), rng.randi_range(8, 82))
+	player.position = World.map_to_world(location)
+	print("spawning")
+		
 
-func _on_Farm_area_entered(area:Area2D):
-	area.queue_free()
+func _on_Node2D_area_entered(area:Area2D):
+	pass # Replace with function body.
