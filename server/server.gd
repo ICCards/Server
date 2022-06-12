@@ -27,8 +27,8 @@ func _player_connected(player_id):
 	
 func _player_disconnected(player_id):
 	print("Player: " + str(player_id) + " Disconnected")
-	if has_node(str(player_id)):
-		get_node(str(player_id)).queue_free()
+	if world.has_node(str(player_id)):
+		world.get_node(str(player_id)).queue_free()
 		player_state.erase(player_id)
 		rpc_id(0, "DespawnPlayer", player_id)
 	
