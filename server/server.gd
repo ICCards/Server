@@ -62,6 +62,7 @@ remote func GetCharacter():
 	rpc_id(player_id, "ReceiveCharacter", player.data)
 
 remote func GetCharacterById(player_id):
+	var caller = get_tree().get_rpc_sender_id()
 	var player = world.get_node(str(player_id))
 	player.data["id"] = player_id
-	rpc_id(player_id, "ReceiveCharacter", player.data)
+	rpc_id(caller, "ReceiveCharacter", player.data)
