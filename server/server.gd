@@ -9,6 +9,7 @@ var port = 65124
 var max_players = 100
 
 var player_state = {}
+var decoration_state = {}
 
 func _ready():
 	start_server()

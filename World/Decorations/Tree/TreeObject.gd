@@ -6,7 +6,7 @@ onready var world = get_tree().current_scene
 var location_of_object
 var variety
 var showFullTree
-
+var type = "tree"
 func initialize(inputVar, loc, ifFullTree):
 	variety = inputVar
 	location_of_object = loc
@@ -48,5 +48,9 @@ func disable_tree_top_collision_box():
 		$TreeTopArea/E.set_deferred("disabled", true)
 
 
-func _on_TreeObject_area_entered(_area:Area2D):
-	queue_free()
+func _on_TreeObject_area_entered(area:Area2D):
+	if area.type == "tree" or area.type == "world":
+		Server.decoration_state.erase(area.name)
+		queue_free()
+	else:
+		pass
