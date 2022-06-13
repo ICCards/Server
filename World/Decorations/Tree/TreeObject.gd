@@ -16,6 +16,7 @@ func initialize(inputVar, loc, ifFullTree):
 	showFullTree = ifFullTree
 
 func _ready():
+	set_meta('type',type)
 	set_tree_top_collision_shape()
 	if !showFullTree:
 		disable_tree_top_collision_box()
@@ -52,9 +53,10 @@ func disable_tree_top_collision_box():
 
 
 func _on_TreeObject_area_entered(area:Area2D):
-	if area.type == "tree" or area.type == "world":
-		Server.decoration_state.erase(area.name)
-		queue_free()
+	if area.has_meta("type"):
+		if area.get_meta("type") == "tree" or area.get_meta("type") == "world":
+			Server.decoration_state.erase(area.name)
+			queue_free()
 	else:
 		pass
 

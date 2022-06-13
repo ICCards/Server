@@ -26,6 +26,7 @@ const NUM_FLOWER_TILES = 250
 const MAX_GRASS_BUNCH_SIZE = 24
 
 func _ready():
+	set_meta('type',type)
 	Server.world = self
 	generate_farm()
 

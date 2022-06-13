@@ -9,6 +9,7 @@ extents = Vector2( 22.7083, 28.1439 )
 extents = Vector2( 22.7778, 28.3507 )
 
 [node name="TreeObject" type="Area2D"]
+visible = false
 scale = Vector2( 0.9, 0.9 )
 script = ExtResource( 1 )
 

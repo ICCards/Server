@@ -1,13 +1,9 @@
 extends Node
 
-
 var world
-
-
 var network = NetworkedMultiplayerENet.new()
 var port = 65124
 var max_players = 100
-
 var player_state = {}
 var decoration_state = {}
 
@@ -33,20 +29,20 @@ func _player_disconnected(player_id):
 		player_state.erase(player_id)
 		rpc_id(0, "DespawnPlayer", player_id)
 	
-		
 func updateState(state):
 	rpc_unreliable_id(0, "updateState", state)
 
+func _spawnPlayer(player_id,location):
+	rpc_id(0,"SpawnPlayer",player_id,location)
+
 remote func message_send(message):
+	print(message)
 	var player_id = get_tree().get_rpc_sender_id()
 	if player_state.has(player_id):
 		if player_state[player_id]["T"] < message["T"]:
 			player_state[player_id] = message
 	else:
 		player_state[player_id] = message
-
-func _spawnPlayer(player_id,location):
-	rpc_id(0,"SpawnPlayer",player_id,location)
 
 remote func FetchServerTime(client_time):
 	var player_id = get_tree().get_rpc_sender_id()
@@ -66,11 +62,14 @@ remote func GetCharacterById(player_id):
 	var player = world.get_node(str(player_id))
 	rpc_id(caller, "ReceiveCharacter", player.data,player_id)
 
-remote func action(input, client_clock):
-
-	var player_id = get_tree().get_rpc_sender_id()
-	var player = world.get_node(player_id)
-	match (input):
-		("mouse_click"):
-			player.swing()
-	rpc_id(0, "ReceivedAction",client_clock,player_id,input)
+remote func action(type,input):
+	match type:
+		("MOVEMENT"):
+			print(input)
+			var player_id = get_tree().get_rpc_sender_id()
+			var player = world.get_node(str(player_id))
+			player.movement_state(input.I)
+			rpc_id(0, "receiveAction",player_id,type,player.position,player.direction)
+		("SWING"):
+			pass
+	#rpc_id(0, "ReceivedAction",client_clock,player_id,input)
