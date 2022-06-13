@@ -60,6 +60,7 @@ remote func GetCharacter():
 remote func GetCharacterById(player_id):
 	var caller = get_tree().get_rpc_sender_id()
 	var player = world.get_node(str(player_id))
+	
 	rpc_id(caller, "ReceiveCharacter", player.data,player_id)
 
 remote func action(type,input):
