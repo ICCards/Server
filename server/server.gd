@@ -67,3 +67,11 @@ remote func GetCharacterById(player_id):
 	var player = world.get_node(str(player_id))
 	player.data["id"] = player_id
 	rpc_id(caller, "ReceiveCharacter", player.data)
+
+remote func action(input, client_clock):
+	var player_id = get_tree().get_rpc_sender_id()
+	var player = world.get_node(player_id)
+	match (input):
+		("mouse_click"):
+			player.swing()
+	rpc_id(0, "ReceivedAction",client_clock,player_id,input)
