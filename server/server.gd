@@ -69,7 +69,7 @@ remote func action(type,input):
 			var player_id = get_tree().get_rpc_sender_id()
 			var player = world.get_node(str(player_id))
 			player.movement_state(input.I)
-			rpc_id(0, "receiveAction",player_id,type,player.position,player.direction)
+			rpc_id(0, "receiveAction",player_id,type,player.position,player.direction,OS.get_system_time_msecs())
 		("SWING"):
 			pass
 	#rpc_id(0, "ReceivedAction",client_clock,player_id,input)
