@@ -20,7 +20,8 @@ func start_server():
 	
 func _player_connected(player_id):
 	print("Player: " + str(player_id) + " Connected")
-	world.spawnPlayer(player_id)
+	if not players.has(player_id):
+		world.spawnPlayer(player_id)
 	
 func _player_disconnected(player_id):
 	print("Player: " + str(player_id) + " Disconnected")
@@ -33,8 +34,8 @@ func updateState(state):
 	rpc_unreliable_id(0, "updateState", state)
 
 func _spawnPlayer(player_id,location):
-	if not players.has(player_id):
-		rpc_id(0,"SpawnPlayer",player_id,location)
+	players.append(player_id)
+	rpc_id(0,"SpawnPlayer",player_id,location)
 
 remote func message_send(message):
 	print(message)
