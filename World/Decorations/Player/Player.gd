@@ -27,7 +27,8 @@ func _ready():
 func _process(_delta) -> void:
 	delta = _delta
 
-func movement_state(direction):
+func movement_state(value):
+	direction = value
 	var input_vector = Vector2.ZERO			
 	if direction == "UP":
 		input_vector.y -= 1.0
