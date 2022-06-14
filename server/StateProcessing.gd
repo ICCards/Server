@@ -1,11 +1,14 @@
 extends Node
 
 var world_state = {
-	"player_state":{},
+	"players":[],
 	"decoration_state":{}
 }
 
-#func _physics_process(_delta):
+func _physics_process(_delta):
+	if not Server.players.empty():
+		world_state["players"] = Server.players
+		Server.updateState(world_state)
 	#if not Server.player_state.empty() or not Server.decoration_state.empty():
 		#world_state["player_state"] = Server.player_state.duplicate(true)
 		#world_state["decoration_state"] = Server.decoration_state.duplicate(true)

@@ -6,7 +6,7 @@ var port = 65124
 var max_players = 100
 var player_state = {}
 var decoration_state = {}
-
+var players = []
 func _ready():
 	start_server()
 	
@@ -26,14 +26,15 @@ func _player_disconnected(player_id):
 	print("Player: " + str(player_id) + " Disconnected")
 	if world.has_node(str(player_id)):
 		world.get_node(str(player_id)).queue_free()
-		player_state.erase(player_id)
+		players.erase(player_id)
 		rpc_id(0, "DespawnPlayer", player_id)
 	
 func updateState(state):
 	rpc_unreliable_id(0, "updateState", state)
 
 func _spawnPlayer(player_id,location):
-	rpc_id(0,"SpawnPlayer",player_id,location)
+	if not players.has(player_id):
+		rpc_id(0,"SpawnPlayer",player_id,location)
 
 remote func message_send(message):
 	print(message)
