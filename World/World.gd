@@ -86,6 +86,11 @@ func spawnPlayer(player_id):
 	player.position = World.map_to_world(location)
 	add_child(player,true)
 	print("spawning")
+	var data = {
+		"character":characters.front(),
+		"id":player_id
+	}
+	Server.players.append(data)
 	Server._spawnPlayer(player_id,player.position)
 
 		

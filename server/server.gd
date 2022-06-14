@@ -34,7 +34,6 @@ func updateState(state):
 	rpc_unreliable_id(0, "updateState", state)
 
 func _spawnPlayer(player_id,location):
-	players.append(player_id)
 	rpc_id(0,"SpawnPlayer",player_id,location)
 
 remote func message_send(message):
@@ -62,7 +61,6 @@ remote func GetCharacter():
 remote func GetCharacterById(player_id):
 	var caller = get_tree().get_rpc_sender_id()
 	var player = world.get_node(str(player_id))
-	
 	rpc_id(caller, "ReceiveCharacter", player.data,player_id)
 
 remote func action(type,input):
