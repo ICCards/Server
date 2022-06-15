@@ -77,6 +77,7 @@ func place_object(type, variety, loc, isFullGrowth):
 
 
 func spawnPlayer(player_id):
+	Server.players[player_id] ={}
 	var player = Player.instance()
 	player.name = str(player_id)
 	characters.shuffle()
@@ -85,14 +86,17 @@ func spawnPlayer(player_id):
 	var location = Vector2(rng.randi_range(-50, 60), rng.randi_range(8, 82))
 	player.position = World.map_to_world(location)
 	add_child(player,true)
-	print("spawning")
 	var data = {
-		"character":characters.front(),
-		"id":player_id
+		"c":characters.front(),
+		"id":player_id,
+		"p":player.position,
+		"d":"DOWN",
+		"t":OS.get_system_time_msecs()
 	}
-	Server.players.append(data)
-	Server._spawnPlayer(player_id,player.position)
-
+	Server.players[player_id] = data
+	print("spawned player " + str(player_id))
+	print(data)
+	#Server._spawnPlayer(data)
 		
 
 func _on_Node2D_area_entered(area:Area2D):

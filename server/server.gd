@@ -4,9 +4,9 @@ var world
 var network = NetworkedMultiplayerENet.new()
 var port = 65124
 var max_players = 100
-var player_state = {}
 var decoration_state = {}
-var players = []
+var players = {}
+var message
 func _ready():
 	start_server()
 	
@@ -20,7 +20,7 @@ func start_server():
 	
 func _player_connected(player_id):
 	print("Player: " + str(player_id) + " Connected")
-	if not players.has(player_id):
+	if not players.keys().has(player_id):
 		world.spawnPlayer(player_id)
 	
 func _player_disconnected(player_id):
@@ -28,22 +28,27 @@ func _player_disconnected(player_id):
 	if world.has_node(str(player_id)):
 		world.get_node(str(player_id)).queue_free()
 		players.erase(player_id)
-		rpc_id(0, "DespawnPlayer", player_id)
+		rpc_unreliable_id(0, "DespawnPlayer", player_id)
 	
 func updateState(state):
 	rpc_unreliable_id(0, "updateState", state)
 
-func _spawnPlayer(player_id,location):
-	rpc_id(0,"SpawnPlayer",player_id,location)
+#func _spawnPlayer(data):
+#	print("spawning")
+#	print(data)
+#	rpc_unreliable_id(data["id"],"SpawnPlayer",data)
 
-remote func message_send(message):
-	print(message)
-	var player_id = get_tree().get_rpc_sender_id()
-	if player_state.has(player_id):
-		if player_state[player_id]["T"] < message["T"]:
-			player_state[player_id] = message
-	else:
-		player_state[player_id] = message
+remote func message_send(value):
+	message = value
+
+#remote func message_send(message):
+#	print(message)
+#	var player_id = get_tree().get_rpc_sender_id()
+#	if players.has(player_id):
+#		if players[player_id]["T"] < message["T"]:
+#			players[player_id] = message
+#	else:
+#		players[player_id] = message
 
 remote func FetchServerTime(client_time):
 	var player_id = get_tree().get_rpc_sender_id()
@@ -58,19 +63,29 @@ remote func GetCharacter():
 	var player = world.get_node(str(player_id))
 	rpc_id(player_id, "ReceiveCharacter", player.data,player_id)
 
-remote func GetCharacterById(player_id):
-	var caller = get_tree().get_rpc_sender_id()
-	var player = world.get_node(str(player_id))
-	rpc_id(caller, "ReceiveCharacter", player.data,player_id)
+#remote func GetCharacterById(player_id):
+#	var caller = get_tree().get_rpc_sender_id()
+#	var player = world.get_node(str(player_id))
+#	rpc_id(caller, "ReceiveCharacter", player.data,player_id)
 
-remote func action(type,input):
-	match type:
-		("MOVEMENT"):
-			print(input)
-			var player_id = get_tree().get_rpc_sender_id()
-			var player = world.get_node(str(player_id))
-			player.movement_state(input.I)
-			rpc_id(0, "receiveAction",player_id,type,player.position,player.direction,OS.get_system_time_msecs())
-		("SWING"):
-			pass
+remote func action(type,data):
+	var player_id = get_tree().get_rpc_sender_id()
+	if players.keys().has(player_id):
+		if players[player_id]["t"] < data["t"]:
+			players[player_id]["p"] = data["p"]
+			players[player_id]["d"] = data["d"]
+#			match type:
+#				("MOVEMENT"):
+#					pass
+#					#var player = world.get_node(str(player_id))
+#
+#				("SWING"):
+#					pass
+	else:
+		players[player_id] = data
+#		match type:
+#			("MOVEMENT"):
+#				pass
+#			("SWING"):
+#				pass
 	#rpc_id(0, "ReceivedAction",client_clock,player_id,input)
