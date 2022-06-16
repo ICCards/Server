@@ -2,7 +2,7 @@ extends Node2D
 
 #onready var TreeObject = preload("res://World/Decorations/Tree/TreeObject.tscn")
 onready var Player = preload("res://World/Decorations/Player/Player.tscn")
-onready var World = $Terrian
+onready var Terrian = $Terrian
 
 var _uuid = preload("res://helpers/UUID.gd")
 onready var uuid = _uuid.new()
@@ -98,7 +98,7 @@ func spawnPlayer(player_id):
 	player.data["character"] = characters.front()
 	rng.randomize()
 	var location = Vector2(rng.randi_range(-50, 60), rng.randi_range(8, 82))
-	player.position = World.map_to_world(location)
+	#player.position = Ground.map_to_world(location)
 	add_child(player,true)
 	var data = {
 		"c":characters.front(),

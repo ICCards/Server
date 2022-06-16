@@ -19,7 +19,7 @@ anchor_mode = 0
 current = true
 zoom = Vector2( 20, 20 )
 
-[node name="Terrian" type="Node" parent="."]
+[node name="Terrian" type="Node2D" parent="."]
 script = ExtResource( 3 )
 width = 1920
 height = 1080
