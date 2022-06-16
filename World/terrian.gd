@@ -31,7 +31,7 @@ func _ready() -> void:
 	generate_trees()
 	generate_ores()
 	generate_flowers()
-	#print(map)
+	print("done")
 	
 func generate_map() -> void:
 	for x in width:

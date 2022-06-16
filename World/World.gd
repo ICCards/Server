@@ -2,7 +2,7 @@ extends Node2D
 
 #onready var TreeObject = preload("res://World/Decorations/Tree/TreeObject.tscn")
 onready var Player = preload("res://World/Decorations/Player/Player.tscn")
-onready var World = $World
+onready var World = $Terrian
 
 var _uuid = preload("res://helpers/UUID.gd")
 onready var uuid = _uuid.new()
