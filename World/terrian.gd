@@ -21,17 +21,6 @@ export var NUM_FLOWER = 75000
 export var MAX_GRASS_BUNCH_SIZE = 500
 var rng = RandomNumberGenerator.new()
 onready var tile_maps = [_Tree,Stump,Log,Ore_Large,Ore,Flower]
-#ground
-#grass_ground
-#dark_grass_ground
-#water
-#grass
-#tree
-#stone_large
-#stone
-#log
-#stump
-#flower
 
 func _ready() -> void:
 	randomize()
@@ -42,11 +31,23 @@ func _ready() -> void:
 	generate_trees()
 	generate_ores()
 	generate_flowers()
+	#print(map)
 	
 func generate_map() -> void:
 	for x in width:
 		for y in height:
 			var rand := floor((abs(openSimplexNoise.get_noise_2d(x,y)))*6)
+			match rand:
+				float(0):
+					get_parent().map["dirt"].append(Vector2(x,y)) 
+				float(1):
+					get_parent().map["dark_grass"].append(Vector2(x,y)) 
+				float(2):	
+					get_parent().map["grass"].append(Vector2(x,y))
+				float(3):	
+					get_parent().map["water"].append(Vector2(x,y)) 
+				float(4):	
+					get_parent().map["water"].append(Vector2(x,y)) 
 			Ground.set_cell(x,y, rand)
 
 func generate_grass_bunches():
@@ -95,6 +96,7 @@ func generate_ores():
 
 func create_flower(loc):
 	if check_loc(loc):
+		get_parent().map["flower"].append(loc)
 		Flower.set_cellv(loc,0)
 	else:
 		rng.randomize()
@@ -103,6 +105,7 @@ func create_flower(loc):
 
 func create_tree(loc):
 	if check_64x64(loc):
+		get_parent().map["tree"].append(loc)
 		_Tree.set_cellv(loc,0)
 	else:
 		rng.randomize()
@@ -111,6 +114,7 @@ func create_tree(loc):
 		
 func create_stump(loc):
 	if check_64x64(loc):
+		get_parent().map["stump"].append(loc)
 		Stump.set_cellv(loc,0)
 	else:
 		rng.randomize()
@@ -119,6 +123,7 @@ func create_stump(loc):
 	
 func create_log(loc):
 	if check_64x64(loc):
+		get_parent().map["log"].append(loc)
 		Log.set_cellv(loc,0)
 	else:
 		rng.randomize()
@@ -127,6 +132,7 @@ func create_log(loc):
 		
 func create_ore_large(loc):
 	if check_64x64(loc):
+		get_parent().map["ore_large"].append(loc)
 		Ore_Large.set_cellv(loc,0)
 	else:
 		rng.randomize()
@@ -135,6 +141,7 @@ func create_ore_large(loc):
 
 func create_ore(loc):
 	if check_64x64(loc):
+		get_parent().map["ore"].append(loc)
 		Ore.set_cellv(loc,0)
 	else:
 		rng.randomize()
