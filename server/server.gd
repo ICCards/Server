@@ -22,7 +22,6 @@ func _player_connected(player_id):
 	print("Player: " + str(player_id) + " Connected")
 	if not players.keys().has(player_id):
 		world.spawnPlayer(player_id)
-	rpc_unreliable_id(player_id, "loadMap", world.map)
 	
 func _player_disconnected(player_id):
 	print("Player: " + str(player_id) + " Disconnected")
@@ -34,9 +33,9 @@ func _player_disconnected(player_id):
 func updateState(state):
 	rpc_unreliable_id(0, "updateState", state)
 
-#remote func getMap():
-#	var player_id = get_tree().get_rpc_sender_id()
-	#rpc_unreliable_id(player_id, "loadMap", world.map)
+remote func getMap():
+	var player_id = get_tree().get_rpc_sender_id()
+	rpc_unreliable_id(player_id, "loadMap", world.map)
 
 #func _spawnPlayer(data):
 #	print("spawning")
