@@ -84,8 +84,37 @@ remote func action(type,data):
 				("SWING"):
 					var name = data["n"]
 					var id = data["id"]
-					world.map[name][id]["h"] - 1
-					if world.map[name][id]["h"] - 1 <= 0:
-						world.map[name].erase(id)
+					match name:
+						("dirt"):
+							pass
+						("grass"):
+							pass
+						("dark_grass"):
+							pass
+						("tall_grass"):
+							pass
+						("water"):
+							pass
+						("tree"):
+							world.map[name][id]["h"] - 1
+							if world.map[name][id]["h"] - 1 <= 0:
+								world.map[name].erase(id)
+						("ore_large"):
+							world.map[name][id]["h"] - 1
+							if world.map[name][id]["h"] - 1 <= 0:
+								world.map[name].erase(id)
+						("ore"):
+							world.map[name][id]["h"] - 1
+							if world.map[name][id]["h"] - 1 <= 0:
+								world.map[name].erase(id)
+						("log"):
+							world.map[name][id]["h"] - 1
+							if world.map[name][id]["h"] - 1 <= 0:
+								world.map[name].erase(id)
+						("stump"):
+							world.map[name][id]["h"] - 1
+							if world.map[name][id]["h"] - 1 <= 0:
+								world.map[name].erase(id)
+						("flower"):
+							pass
 					rpc_id(0, "ReceivedAction",OS.get_system_time_msecs(),player_id,"SWING",data)
-						
