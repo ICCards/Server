@@ -21,8 +21,8 @@ zoom = Vector2( 20, 20 )
 
 [node name="Terrian" type="Node2D" parent="."]
 script = ExtResource( 3 )
-width = 1920
-height = 1080
+NUM_TREES = 3000
+MAX_GRASS_BUNCH_SIZE = 100
 
 [node name="Ground" type="TileMap" parent="Terrian"]
 tile_set = ExtResource( 2 )

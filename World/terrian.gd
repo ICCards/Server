@@ -1,7 +1,7 @@
 extends Node2D
 
-export var width := 128
-export var height := 75
+export var width := 300
+export var height := 300
 var openSimplexNoise := OpenSimplexNoise.new()
 onready var Ground = $Ground
 onready var Grass = $Grass
@@ -11,14 +11,14 @@ onready var Log = $Log
 onready var Ore = $Ore
 onready var Ore_Large = $Ore_Large
 onready var Flower = $Flower
-export var NUM_GRASS_BUNCHES = 1920
-export var NUM_TREES = 100000
-export var NUM_LOGS = 50000
-export var NUM_STUMPS = 25000
-export var NUM_ORE = 50000
-export var NUM_ORE_LARGE = 50000
-export var NUM_FLOWER = 75000
-export var MAX_GRASS_BUNCH_SIZE = 500
+export var NUM_GRASS_BUNCHES = 500
+export var NUM_TREES = 5000
+export var NUM_LOGS = 1000
+export var NUM_STUMPS = 1000
+export var NUM_ORE = 3000
+export var NUM_ORE_LARGE = 1000
+export var NUM_FLOWER = 500
+export var MAX_GRASS_BUNCH_SIZE = 1000
 var rng = RandomNumberGenerator.new()
 onready var tile_maps = [_Tree,Stump,Log,Ore_Large,Ore,Flower]
 
@@ -62,6 +62,7 @@ func create_grass_bunch(loc):
 	for _i in range(randomNum):
 		loc += Vector2(rng.randi_range(-1, 1), rng.randi_range(-1, 1))
 		if isValidGrassTile(loc):
+			get_parent().map["tall_grass"].append(loc)
 			Grass.set_cellv(loc,0)
 			
 func generate_trees():
@@ -86,7 +87,7 @@ func generate_flowers():
 
 func generate_ores():
 	for _i in range(NUM_ORE):
-		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
+		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, 0 - height))
 		if isValidOreTile(location):
 			create_ore_large(location)
 	for _i in range(NUM_ORE_LARGE):

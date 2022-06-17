@@ -33,14 +33,14 @@ func _player_disconnected(player_id):
 func updateState(state):
 	rpc_unreliable_id(0, "updateState", state)
 
-remote func getMap():
+remote func getMap(key):
 	var player_id = get_tree().get_rpc_sender_id()
-	rpc_unreliable_id(player_id, "loadMap", world.map)
+	rpc_unreliable_id(player_id, "loadMap", world.map[key])
 
-#func _spawnPlayer(data):
-#	print("spawning")
-#	print(data)
-#	rpc_unreliable_id(data["id"],"SpawnPlayer",data)
+func _spawnPlayer(data):
+	print("spawning")
+	print(data)
+	rpc_unreliable_id(data["id"],"SpawnPlayer",data)
 
 remote func message_send(value):
 	message = value
