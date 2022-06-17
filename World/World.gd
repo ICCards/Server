@@ -97,20 +97,20 @@ func spawnPlayer(player_id):
 	characters.shuffle()
 	player.data["character"] = characters.front()
 	rng.randomize()
-	var location = Vector2(rng.randi_range(-50, 60), rng.randi_range(8, 82))
+	var location = Vector2(rng.randi_range(0, 300), rng.randi_range(0, 300))
 	#player.position = Ground.map_to_world(location)
 	add_child(player,true)
 	var data = {
 		"c":characters.front(),
 		"id":player_id,
-		"p":player.position,
+		"p":location,
 		"d":"DOWN",
 		"t":OS.get_system_time_msecs()
 	}
 	Server.players[player_id] = data
 	print("spawned player " + str(player_id))
 	print(data)
-	#Server._spawnPlayer(data)
+	Server._spawnPlayer(data)
 
 
 func _on_Node2D_area_entered(area:Area2D):
