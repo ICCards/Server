@@ -21,6 +21,8 @@ export var NUM_FLOWER = 500
 export var MAX_GRASS_BUNCH_SIZE = 1000
 var rng = RandomNumberGenerator.new()
 onready var tile_maps = [_Tree,Stump,Log,Ore_Large,Ore,Flower]
+var _uuid = preload("res://helpers/UUID.gd")
+onready var uuid = _uuid.new()
 
 func _ready() -> void:
 	randomize()
@@ -37,17 +39,18 @@ func generate_map() -> void:
 	for x in width:
 		for y in height:
 			var rand := floor((abs(openSimplexNoise.get_noise_2d(x,y)))*6)
+			var id = uuid.v4()
 			match rand:
 				float(0):
-					get_parent().map["dirt"].append(Vector2(x,y)) 
+					get_parent().map["dirt"][id] = (Vector2(x,y)) 
 				float(1):
-					get_parent().map["dark_grass"].append(Vector2(x,y)) 
+					get_parent().map["dark_grass"][id] = (Vector2(x,y)) 
 				float(2):	
-					get_parent().map["grass"].append(Vector2(x,y))
+					get_parent().map["grass"][id] = (Vector2(x,y))
 				float(3):	
-					get_parent().map["water"].append(Vector2(x,y)) 
+					get_parent().map["water"][id] = (Vector2(x,y)) 
 				float(4):	
-					get_parent().map["water"].append(Vector2(x,y)) 
+					get_parent().map["water"][id] = (Vector2(x,y)) 
 			Ground.set_cell(x,y, rand)
 
 func generate_grass_bunches():
@@ -62,7 +65,8 @@ func create_grass_bunch(loc):
 	for _i in range(randomNum):
 		loc += Vector2(rng.randi_range(-1, 1), rng.randi_range(-1, 1))
 		if isValidGrassTile(loc):
-			get_parent().map["tall_grass"].append(loc)
+			var id = uuid.v4()
+			get_parent().map["tall_grass"][id] = {"l":loc,"h":5}
 			Grass.set_cellv(loc,0)
 			
 func generate_trees():
@@ -96,8 +100,9 @@ func generate_ores():
 			create_ore(location)
 
 func create_flower(loc):
+	var id = uuid.v4()
 	if check_loc(loc):
-		get_parent().map["flower"].append(loc)
+		get_parent().map["flower"][id] = {"l":loc,"h":5}
 		Flower.set_cellv(loc,0)
 	else:
 		rng.randomize()
@@ -105,8 +110,9 @@ func create_flower(loc):
 		create_tree(loc)
 
 func create_tree(loc):
+	var id = uuid.v4()
 	if check_64x64(loc):
-		get_parent().map["tree"].append(loc)
+		get_parent().map["tree"][id] = {"l":loc,"h":5}
 		_Tree.set_cellv(loc,0)
 	else:
 		rng.randomize()
@@ -114,8 +120,9 @@ func create_tree(loc):
 		create_tree(loc)
 		
 func create_stump(loc):
+	var id = uuid.v4()
 	if check_64x64(loc):
-		get_parent().map["stump"].append(loc)
+		get_parent().map["stump"][id] = {"l":loc,"h":5}
 		Stump.set_cellv(loc,0)
 	else:
 		rng.randomize()
@@ -123,8 +130,9 @@ func create_stump(loc):
 		create_stump(loc)
 	
 func create_log(loc):
+	var id = uuid.v4()
 	if check_64x64(loc):
-		get_parent().map["log"].append(loc)
+		get_parent().map["log"][id] = {"l":loc,"h":5}
 		Log.set_cellv(loc,0)
 	else:
 		rng.randomize()
@@ -132,8 +140,9 @@ func create_log(loc):
 		create_log(loc)
 		
 func create_ore_large(loc):
+	var id = uuid.v4()
 	if check_64x64(loc):
-		get_parent().map["ore_large"].append(loc)
+		get_parent().map["ore_large"][id] = {"l":loc,"h":5}
 		Ore_Large.set_cellv(loc,0)
 	else:
 		rng.randomize()
@@ -141,8 +150,9 @@ func create_ore_large(loc):
 		create_ore_large(loc)
 
 func create_ore(loc):
+	var id = uuid.v4()
 	if check_64x64(loc):
-		get_parent().map["ore"].append(loc)
+		get_parent().map["ore"][id] = {"l":loc,"h":5}
 		Ore.set_cellv(loc,0)
 	else:
 		rng.randomize()

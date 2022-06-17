@@ -76,20 +76,16 @@ remote func action(type,data):
 	var player_id = get_tree().get_rpc_sender_id()
 	if players.keys().has(player_id):
 		if players[player_id]["t"] < data["t"]:
-			players[player_id]["p"] = data["p"]
-			players[player_id]["d"] = data["d"]
-#			match type:
-#				("MOVEMENT"):
-#					pass
-#					#var player = world.get_node(str(player_id))
-#
-#				("SWING"):
-#					pass
-	else:
-		players[player_id] = data
-#		match type:
-#			("MOVEMENT"):
-#				pass
-#			("SWING"):
-#				pass
-	#rpc_id(0, "ReceivedAction",client_clock,player_id,input)
+			match type:
+				("MOVEMENT"):
+					players[player_id]["p"] = data["p"]
+					players[player_id]["d"] = data["d"]
+
+				("SWING"):
+					var name = data["n"]
+					var id = data["id"]
+					world.map[name][id]["h"] - 1
+					if world.map[name][id]["h"] - 1 <= 0:
+						world.map[name].erase(id)
+					rpc_id(0, "ReceivedAction",OS.get_system_time_msecs(),player_id,"SWING",data)
+						

@@ -20,17 +20,17 @@ var characters = ["human_male", "human_female", "lesser_demon_male", "ogre_femal
 #var object_variety = "A"
 
 var map = {
-	"dirt":[],
-	"grass":[],
-	"dark_grass":[],
-	"tall_grass":[],
-	"water":[],
-	"tree":[],
-	"ore_large":[],
-	"ore":[],
-	"log":[],
-	"stump":[],
-	"flower":[],
+	"dirt":{},
+	"grass":{},
+	"dark_grass":{},
+	"tall_grass":{},
+	"water":{},
+	"tree":{},
+	"ore_large":{},
+	"ore":{},
+	"log":{},
+	"stump":{},
+	"flower":{},
 }
 
 #const NUM_FARM_OBJECTS = 550
