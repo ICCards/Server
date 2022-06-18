@@ -121,4 +121,4 @@ remote func action(type,data):
 								world.map[name].erase(id)
 						("flower"):
 							pass
-				rpc_id(0, "ReceivedAction",OS.get_system_time_msecs(),player_id,"SWING",data)
+				rpc_id(0, "ReceivedAction",OS.get_system_time_msecs(),player_id,type,data)
