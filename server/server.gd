@@ -80,8 +80,9 @@ remote func action(type,data):
 				if players[player_id]["t"] < data["t"]:
 					players[player_id]["p"] = data["p"]
 					players[player_id]["d"] = data["d"]
-
 			("SWING"):
+				pass
+			("ON_HIT"):
 				if not data.empty():
 					var name = data["n"]
 					var id = data["id"]
