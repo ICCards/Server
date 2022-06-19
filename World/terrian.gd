@@ -112,7 +112,7 @@ func create_flower(loc):
 func create_tree(loc):
 	var id = uuid.v4()
 	if check_64x64(loc):
-		get_parent().map["tree"][id] = {"l":loc,"h":5}
+		get_parent().map["tree"][id] = {"l":loc,"h":8}
 		_Tree.set_cellv(loc,0)
 	else:
 		rng.randomize()
@@ -122,7 +122,7 @@ func create_tree(loc):
 func create_stump(loc):
 	var id = uuid.v4()
 	if check_64x64(loc):
-		get_parent().map["stump"][id] = {"l":loc,"h":5}
+		get_parent().map["stump"][id] = {"l":loc,"h":3}
 		Stump.set_cellv(loc,0)
 	else:
 		rng.randomize()
@@ -132,7 +132,7 @@ func create_stump(loc):
 func create_log(loc):
 	var id = uuid.v4()
 	if check_64x64(loc):
-		get_parent().map["log"][id] = {"l":loc,"h":5}
+		get_parent().map["log"][id] = {"l":loc,"h":1}
 		Log.set_cellv(loc,0)
 	else:
 		rng.randomize()
@@ -142,7 +142,7 @@ func create_log(loc):
 func create_ore_large(loc):
 	var id = uuid.v4()
 	if check_64x64(loc):
-		get_parent().map["ore_large"][id] = {"l":loc,"h":5}
+		get_parent().map["ore_large"][id] = {"l":loc,"h":8}
 		Ore_Large.set_cellv(loc,0)
 	else:
 		rng.randomize()
@@ -152,7 +152,7 @@ func create_ore_large(loc):
 func create_ore(loc):
 	var id = uuid.v4()
 	if check_64x64(loc):
-		get_parent().map["ore"][id] = {"l":loc,"h":5}
+		get_parent().map["ore"][id] = {"l":loc,"h":3}
 		Ore.set_cellv(loc,0)
 	else:
 		rng.randomize()
