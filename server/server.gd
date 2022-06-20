@@ -121,22 +121,14 @@ remote func action(type,data):
 								world.map[name].erase(id)
 						("flower"):
 							pass
-						("object"):
-							world.map[name].erase(id)
+						("decorations"):
+							world.map["decorations"][name].erase(id)
 							print("erasing object from world " + str(id))
-						("seed"):
-							world.map[name].erase(id)
-							print("erasing seed from world " + str(id))
 			("PLACE_ITEM"):
 				var name = data["n"]
 				var id = data["id"]
 				var loc = data["l"]
-				world.map["object"][id] = {"n": name, "l": loc} 
-			("PLACE_SEED"):
-				var name = data["n"]
-				var id = data["id"]
-				var loc = data["l"]
-				world.map["seed"][id] = {"n": name, "l": loc} 
+				world.map["decorations"][name][id] = {"n": name, "l": loc}
 			("CHANGE_TILE"):
 				var name = data["n"]
 				var id = data["id"]
