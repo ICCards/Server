@@ -31,6 +31,9 @@ var map = {
 	"log":{},
 	"stump":{},
 	"flower":{},
+	"object": {},
+	"seed": {},
+	"tile": {},
 }
 
 #const NUM_FARM_OBJECTS = 550

@@ -121,4 +121,32 @@ remote func action(type,data):
 								world.map[name].erase(id)
 						("flower"):
 							pass
+						("object"):
+							world.map[name].erase(id)
+							print("erasing object from world " + str(id))
+						("seed"):
+							world.map[name].erase(id)
+							print("erasing seed from world " + str(id))
+			("PLACE_ITEM"):
+				var name = data["n"]
+				var id = data["id"]
+				var loc = data["l"]
+				world.map["object"][id] = {"n": name, "l": loc} 
+			("PLACE_SEED"):
+				var name = data["n"]
+				var id = data["id"]
+				var loc = data["l"]
+				world.map["seed"][id] = {"n": name, "l": loc} 
+			("CHANGE_TILE"):
+				var name = data["n"]
+				var id = data["id"]
+				var loc = data["l"]
+				if name == "hoe" or name == "water":
+					world.map["tile"][id] = {"n": name, "l": loc}
+				elif name == "remove":
+					for _id in world.map["tile"]:
+						if world.map["tile"][_id]["l"] == loc:
+							world.map["tile"].erase(_id)
+
+
 		rpc_id(0, "ReceivedAction",OS.get_system_time_msecs(),player_id,type,data)
