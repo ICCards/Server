@@ -122,15 +122,14 @@ remote func action(type,data):
 						("flower"):
 							pass
 						("decorations"):
-							var obect_type = data["t"]
-							world.map["decorations"][name][obect_type].erase(id)
+							var object_type = data["t"]
+							world.map["decorations"][object_type].erase(id)
 							print("erasing object from world " + str(id))
 			("PLACE_ITEM"):
-				var name = data["n"]
 				var id = data["id"]
-				var loc = data["l"]
-				var obect_type = data["t"]
-				world.map["decorations"][obect_type][name][id] = {"n": name, "l": loc}
+				var object_type = data["t"]
+				world.map["decorations"][object_type][id] = data
+				print("place item " + id)
 			("CHANGE_TILE"):
 				var name = data["n"]
 				var id = data["id"]
