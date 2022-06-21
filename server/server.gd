@@ -7,6 +7,11 @@ var max_players = 100
 var decoration_state = {}
 var players = {}
 var message
+var day = true
+var day_num = 1
+var season = "Spring"
+var watered_tiles = []
+
 func _ready():
 	start_server()
 	
@@ -130,16 +135,22 @@ remote func action(type,data):
 				var object_type = data["t"]
 				world.map["decorations"][object_type][id] = data
 				print("place item " + id)
-			("CHANGE_TILE"):
-				var name = data["n"]
+				
+			("HOE"):
 				var id = data["id"]
-				var loc = data["l"]
-				if name == "hoe" or name == "water":
-					world.map["tile"][id] = {"n": name, "l": loc}
-				elif name == "remove":
-					for _id in world.map["tile"]:
-						if world.map["tile"][_id]["l"] == loc:
-							world.map["tile"].erase(_id)
+				world.map["dirt"][id]["isHoed"] = true
+				rpc_id(0, "ChangeTile", world.map["dirt"][id])
+			("WATER"):
+				var id = data["id"]
+				world.map["dirt"][id]["isWatered"] = true
+				rpc_id(0, "ChangeTile", world.map["dirt"][id])
+			("PICKAXE"):
+				var id = data["id"]
+				if world.map["dirt"][id]["isHoed"] == true or world.map["dirt"][id]["isWatered"] == true:
+					world.map["dirt"][id]["isWatered"] = false
+					world.map["dirt"][id]["isHoed"] = false
+					rpc_id(0, "ChangeTile", world.map["dirt"][id])
 
 
 		rpc_id(0, "ReceivedAction",OS.get_system_time_msecs(),player_id,type,data)
+

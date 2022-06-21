@@ -17,6 +17,7 @@ config/icon="res://icon.png"
 [autoload]
 
 Server="*res://server/server.gd"
+Seasons="*res://server/seasons.gd"
 
 [display]
 

@@ -24,6 +24,7 @@ onready var tile_maps = [_Tree,Stump,Log,Ore_Large,Ore,Flower]
 var _uuid = preload("res://helpers/UUID.gd")
 onready var uuid = _uuid.new()
 
+
 func _ready() -> void:
 	randomize()
 	openSimplexNoise.seed = randi()
@@ -42,7 +43,7 @@ func generate_map() -> void:
 			var id = uuid.v4()
 			match rand:
 				float(0):
-					get_parent().map["dirt"][id] = (Vector2(x,y)) 
+					get_parent().map["dirt"][id] = {"l":Vector2(x,y), "isWatered":false, "isHoed":false}
 				float(1):
 					get_parent().map["dark_grass"][id] = (Vector2(x,y)) 
 				float(2):	
