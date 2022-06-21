@@ -31,7 +31,6 @@ var map = {
 	"log":{},
 	"stump":{},
 	"flower":{},
-	"decorations":{"seed":{},"placable":{}},
 	"tile": {},
 }
 
