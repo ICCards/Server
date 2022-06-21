@@ -4,7 +4,7 @@ var world
 var network = NetworkedMultiplayerENet.new()
 var port = 65124
 var max_players = 100
-var decoration_state = {}
+var decorations = {"seed":{},"placable":{}}
 var players = {}
 var message
 var day = true
@@ -133,7 +133,7 @@ remote func action(type,data):
 			("PLACE_ITEM"):
 				var id = data["id"]
 				var object_type = data["t"]
-				world.map["decorations"][object_type][id] = data
+				decorations[object_type][id] = data
 				print("place item " + id)
 				
 			("HOE"):
