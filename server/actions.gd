@@ -12,6 +12,7 @@ func action(player_id,message):
 				Server.ws.get_peer(id).put_packet(response)
 		("ON_HIT"):
 			onHit(message)
+			message["id"] = player_id
 			var response = Util.toMessage("ReceivedAction", message)
 			for id in Server.players.keys():
 				Server.ws.get_peer(id).put_packet(response)
