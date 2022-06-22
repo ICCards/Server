@@ -9,6 +9,7 @@ var world
 var day = true
 var day_num = 1
 var season = "Spring"
+var time_elapsed = 0
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	ws.connect("client_connected",self,"_connected")
@@ -67,14 +68,13 @@ func _spawnPlayer(data):
 func _on_data(player_id):
 	var pkt = ws.get_peer(player_id).get_packet()
 	var result = Util.jsonParse(pkt)
-	print(result)
+
 	var time = OS.get_system_time_msecs()
 	var responses = {"t":time,"id":player_id,"m":result["d"]}
 	match result["n"]:
 		("getMap"):
 			print("geting map")
 			var key = result["d"]
-			print(key)
 			var message = Util.toMessage("loadMap",world.map[key])
 			ws.get_peer(player_id).put_packet(message)
 		("FetchServerTime"):
@@ -89,6 +89,7 @@ func _on_data(player_id):
 			var message = Util.toMessage("ReturnLatency",data)
 			ws.get_peer(player_id).put_packet(message)
 		("action"):
+			print(result["n"])
 			Actions.action(player_id,result)
 			var message = Util.toMessage("ReceivedAction", responses)
 			for id in players.keys():

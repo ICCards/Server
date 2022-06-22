@@ -3,7 +3,7 @@ extends Node
 func action(player_id,message):
 	match message["n"]:
 		("MOVEMENT"):
-			print(Server.players[player_id])
+			#print(Server.players[player_id])
 			if Server.players[player_id]["t"] < message["d"]["t"]:
 				Server.players[player_id]["p"] = message["d"]["p"]
 				Server.players[player_id]["d"] = message["d"]["d"]
