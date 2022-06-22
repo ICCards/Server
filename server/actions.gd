@@ -1,5 +1,4 @@
 extends Node
-
 func action(player_id,message):
 	message["id"] = player_id
 	match message["t"]:

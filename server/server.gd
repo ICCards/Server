@@ -69,8 +69,12 @@ func _on_data(player_id):
 	var pkt = ws.get_peer(player_id).get_packet()
 	var result = Util.jsonParse(pkt)
 	var time = OS.get_system_time_msecs()
-	var responses = {"t":time,"id":player_id,"m":result["d"]}
+	var responses = {"t":time,"id":player_id,"d":result["d"]}
 	match result["n"]:
+		("SEND_MESSAGE"):
+			var message = Util.toMessage("ReceiveMessage",responses)
+			for player_id in players.keys():
+				ws.get_peer(player_id).put_packet(message)
 		("getMap"):
 			print("geting map")
 			var key = result["d"]
