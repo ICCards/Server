@@ -1,9 +1,8 @@
 extends Node
 
 func action(player_id,message):
-	match message["n"]:
+	match message["t"]:
 		("MOVEMENT"):
-			print(Server.players[player_id])
 			if Server.players[player_id]["t"] < message["d"]["t"]:
 				Server.players[player_id]["p"] = message["d"]["p"]
 				Server.players[player_id]["d"] = message["d"]["d"]
@@ -12,9 +11,10 @@ func action(player_id,message):
 		("ON_HIT"):
 			onHit(message)
 		("PLACE_ITEM"):
+			print(message)
 			var id = message["d"]["id"]
 			var object_type = message["d"]["t"]
-			Server.world.map["decorations"][object_type][id] = message["d"]
+			Server.decorations[object_type][id] = message["d"]
 			print("place item " + id)
 			print(message["d"])
 		("CHANGE_TILE"):

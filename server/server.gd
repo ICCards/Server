@@ -67,7 +67,6 @@ func _spawnPlayer(data):
 func _on_data(player_id):
 	var pkt = ws.get_peer(player_id).get_packet()
 	var result = Util.jsonParse(pkt)
-	print(result)
 	var time = OS.get_system_time_msecs()
 	var responses = {"t":time,"id":player_id,"m":result["d"]}
 	match result["n"]:
