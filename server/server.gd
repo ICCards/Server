@@ -1,156 +1,95 @@
 extends Node
 
-var world
-var network = NetworkedMultiplayerENet.new()
 var port = 65124
-var max_players = 100
+var counter = 0
+var ws = WebSocketServer.new()
 var decorations = {"seed":{},"placable":{}}
 var players = {}
-var message
+var world
 var day = true
 var day_num = 1
 var season = "Spring"
-var watered_tiles = []
-
+# Called when the node enters the scene tree for the first time.
 func _ready():
-	start_server()
+	ws.connect("client_connected",self,"_connected")
+	ws.connect("client_disconnected", self, "_disconnected")
+	ws.connect("data_received", self, "_on_data")
+	ws.connect("client_close_request", self, "_close_request")
+	var err = ws.listen(port)
+	print("Connecting...")
+	if err != OK:
+		print("Could not establish server connection.")
+		set_process(false)
+		return
+	print("Listing on port %d..." % port)
 	
-func start_server():
-	network.create_server(port, max_players)
-	get_tree().set_network_peer(network)
-	network.connect("peer_connected", self, "_player_connected")
-	network.connect("peer_disconnected", self, "_player_disconnected")
-	
-	print("Server Started")
-	
-func _player_connected(player_id):
+func _connected(player_id, proto):
 	print("Player: " + str(player_id) + " Connected")
+	var data = {"d":player_id}
+	var message = Util.toMessage("ID",data)
+	ws.get_peer(player_id).put_packet(message)
 	if not players.keys().has(player_id):
 		world.spawnPlayer(player_id)
-	
-func _player_disconnected(player_id):
+
+func _close_request(player_id, code, reason):
+	# This is called when a client notifies that it wishes to close the connection,
+	# providing a reason string and close code.
+	print("Client %d disconnecting with code: %d, reason: %s" % [player_id, code, reason])
+
+func _disconnected(player_id, was_clean = false):
 	print("Player: " + str(player_id) + " Disconnected")
 	if world.has_node(str(player_id)):
 		world.get_node(str(player_id)).queue_free()
 		players.erase(player_id)
-		rpc_unreliable_id(0, "DespawnPlayer", player_id)
-	
+		var data = {"d":player_id}
+		var message = Util.toMessage("DespawnPlayer",data)
+		for id in players.keys():
+			ws.get_peer(id).put_packet(message)
+
+func _process(delta):
+	# Call this in _process or _physics_process.
+	# Data transfer, and signals emission will only happen when calling this function.
+	ws.poll()
+
 func updateState(state):
-	rpc_unreliable_id(0, "updateState", state)
-
-remote func getMap(key):
-	var player_id = get_tree().get_rpc_sender_id()
-	rpc_unreliable_id(player_id, "loadMap", world.map[key])
-
+	var data = {"d":state}
+	var message = Util.toMessage("updateState",data)
+	for id in players.keys():
+		ws.get_peer(id).put_packet(message)
+	
 func _spawnPlayer(data):
 	print("spawning")
 	print(data)
-	rpc_unreliable_id(data["id"],"SpawnPlayer",data)
+	var value = {"d":data}
+	var message = Util.toMessage("SpawnPlayer",value)
+	ws.get_peer(data["id"]).put_packet(message)
 
-remote func message_send(value):
-	message = value
-
-#remote func message_send(message):
-#	print(message)
-#	var player_id = get_tree().get_rpc_sender_id()
-#	if players.has(player_id):
-#		if players[player_id]["T"] < message["T"]:
-#			players[player_id] = message
-#	else:
-#		players[player_id] = message
-
-remote func FetchServerTime(client_time):
-	var player_id = get_tree().get_rpc_sender_id()
-	rpc_id(player_id, "ReturnServerTime", OS.get_system_time_msecs(),client_time)
-
-remote func DetermineLatency(client_time):
-	var player_id = get_tree().get_rpc_sender_id()
-	rpc_id(player_id, "ReturnLatency", client_time)
-	
-remote func GetCharacter():
-	var player_id = get_tree().get_rpc_sender_id()
-	var player = world.get_node(str(player_id))
-	rpc_id(player_id, "ReceiveCharacter", player.data,player_id)
-
-#remote func GetCharacterById(player_id):
-#	var caller = get_tree().get_rpc_sender_id()
-#	var player = world.get_node(str(player_id))
-#	rpc_id(caller, "ReceiveCharacter", player.data,player_id)
-
-remote func action(type,data):
-	var player_id = get_tree().get_rpc_sender_id()
-	if players.keys().has(player_id):
-		match type:
-			("MOVEMENT"):
-				if players[player_id]["t"] < data["t"]:
-					players[player_id]["p"] = data["p"]
-					players[player_id]["d"] = data["d"]
-			("SWING"):
-				pass
-			("ON_HIT"):
-				if not data.empty():
-					var name = data["n"]
-					var id = data["id"]
-					match name:
-						("dirt"):
-							pass
-						("grass"):
-							pass
-						("dark_grass"):
-							pass
-						("tall_grass"):
-							pass
-						("water"):
-							pass
-						("tree"):
-							print("tree Id")
-							print(id)
-							world.map[name][id]["h"] - 1
-							if world.map[name][id]["h"] - 1 <= 0:
-								world.map[name].erase(id)
-						("ore_large"):
-							world.map[name][id]["h"] - 1
-							if world.map[name][id]["h"] - 1 <= 0:
-								world.map[name].erase(id)
-						("ore"):
-							world.map[name][id]["h"] - 1
-							if world.map[name][id]["h"] - 1 <= 0:
-								world.map[name].erase(id)
-						("log"):
-							world.map[name][id]["h"] - 1
-							if world.map[name][id]["h"] - 1 <= 0:
-								world.map[name].erase(id)
-						("stump"):
-							world.map[name][id]["h"] - 1
-							if world.map[name][id]["h"] - 1 <= 0:
-								world.map[name].erase(id)
-						("flower"):
-							pass
-						("decorations"):
-							var object_type = data["t"]
-							world.map["decorations"][object_type].erase(id)
-							print("erasing object from world " + str(id))
-			("PLACE_ITEM"):
-				var id = data["id"]
-				var object_type = data["t"]
-				decorations[object_type][id] = data
-				print("place item " + id)
-				
-			("HOE"):
-				var id = data["id"]
-				world.map["dirt"][id]["isHoed"] = true
-				rpc_id(0, "ChangeTile", world.map["dirt"][id])
-			("WATER"):
-				var id = data["id"]
-				world.map["dirt"][id]["isWatered"] = true
-				rpc_id(0, "ChangeTile", world.map["dirt"][id])
-			("PICKAXE"):
-				var id = data["id"]
-				if world.map["dirt"][id]["isHoed"] == true or world.map["dirt"][id]["isWatered"] == true:
-					world.map["dirt"][id]["isWatered"] = false
-					world.map["dirt"][id]["isHoed"] = false
-					rpc_id(0, "ChangeTile", world.map["dirt"][id])
-
-
-		rpc_id(0, "ReceivedAction",OS.get_system_time_msecs(),player_id,type,data)
-
+func _on_data(player_id):
+	var pkt = ws.get_peer(player_id).get_packet()
+	var result = Util.jsonParse(pkt)
+	print(result)
+	var time = OS.get_system_time_msecs()
+	var responses = {"t":time,"id":player_id,"m":result["d"]}
+	match result["n"]:
+		("getMap"):
+			print("geting map")
+			var key = result["d"]
+			print(key)
+			var message = Util.toMessage("loadMap",world.map[key])
+			ws.get_peer(player_id).put_packet(message)
+		("FetchServerTime"):
+			var client_time = result["d"]
+			var data = {"s":OS.get_system_time_msecs(),"c":client_time}
+			var value = {"d":data}
+			var message = Util.toMessage("ReturnServerTime",value)
+			ws.get_peer(player_id).put_packet(message)
+		("DetermineLatency"):
+			var client_time = result["d"]
+			var data = {"d":client_time}
+			var message = Util.toMessage("ReturnLatency",data)
+			ws.get_peer(player_id).put_packet(message)
+		("action"):
+			Actions.action(player_id,result)
+			var message = Util.toMessage("ReceivedAction", responses)
+			for id in players.keys():
+				ws.get_peer(id).put_packet(message)
