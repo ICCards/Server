@@ -6,12 +6,14 @@ var world_state = {
 	"day": true,
 	"season": "Spring",
 	"day_num": 1,
+	"time_elapsed":0
 }
 
 func _physics_process(_delta):
 	world_state["day"] = Server.day
 	world_state["season"] = Server.season
 	world_state["day_num"] = Server.day_num
+	world_state["time_elapsed"] = Server.time_elapsed
 	if not Server.players.empty():
 		world_state["decorations"] = Server.decorations.duplicate(true)
 		world_state["players"] = Server.players.duplicate(true)

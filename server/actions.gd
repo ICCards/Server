@@ -17,17 +17,29 @@ func action(player_id,message):
 			Server.decorations[object_type][id] = message["d"]
 			print("place item " + id)
 			print(message["d"])
-		("CHANGE_TILE"):
-			pass
-#			var name = data["n"]
-#			var id = data["id"]
-#			var loc = data["l"]
-#			if name == "hoe" or name == "water":
-#				Server.world.map["tile"][id] = {"n": name, "l": loc}
-#			elif name == "remove":
-#				for _id in Server.world.map["tile"]:
-#					if Server.world.map["tile"][_id]["l"] == loc:
-#						Server.world.map["tile"].erase(_id)
+		("HOE"):
+			var id = message["d"]["id"]
+			Server.world.map["dirt"][id]["isHoed"] = true
+			var data = {"d":Server.world.map["dirt"][id]}
+			var response = Util.toMessage("ChangeTile",data)
+			for player_id in Server.players.keys():
+				Server.ws.get_peer(player_id).put_packet(response)
+		("WATER"):
+			var id = message["d"]["id"]
+			Server.world.map["dirt"][id]["isWatered"] = true
+			var data = {"d":Server.world.map["dirt"][id]}
+			var response = Util.toMessage("ChangeTile",data)
+			for player_id in Server.players.keys():
+				Server.ws.get_peer(player_id).put_packet(response)
+		("PICKAXE"):
+			var id = message["d"]["id"]
+			if Server.world.map["dirt"][id]["isHoed"] == true or Server.world.map["dirt"][id]["isWatered"] == true:
+				Server.world.map["dirt"][id]["isWatered"] = false
+				Server.world.map["dirt"][id]["isHoed"] = false
+				var data = {"d":Server.world.map["dirt"][id]}
+				var response = Util.toMessage("ChangeTile",data)
+				for player_id in Server.players.keys():
+					Server.ws.get_peer(player_id).put_packet(response)
 	return message
 
 func onHit(data):

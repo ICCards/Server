@@ -9,6 +9,7 @@ var world
 var day = true
 var day_num = 1
 var season = "Spring"
+var time_elapsed = 0
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	ws.connect("client_connected",self,"_connected")
