@@ -7,16 +7,18 @@ func action(player_id,message):
 				Server.players[player_id]["p"] = message["d"]["p"]
 				Server.players[player_id]["d"] = message["d"]["d"]
 		("SWING"):
-			pass
+			var response = Util.toMessage("ReceivedAction", message)
+			for id in Server.players.keys():
+				Server.ws.get_peer(id).put_packet(response)
 		("ON_HIT"):
 			onHit(message)
+			var response = Util.toMessage("ReceivedAction", message)
+			for id in Server.players.keys():
+				Server.ws.get_peer(id).put_packet(response)
 		("PLACE_ITEM"):
-			print(message)
 			var id = message["d"]["id"]
 			var object_type = message["d"]["t"]
 			Server.decorations[object_type][id] = message["d"]
-			print("place item " + id)
-			print(message["d"])
 		("HOE"):
 			var id = message["d"]["id"]
 			Server.world.map["dirt"][id]["isHoed"] = true
@@ -58,8 +60,6 @@ func onHit(data):
 			("water"):
 				pass
 			("tree"):
-				print("tree Id")
-				print(id)
 				Server.world.map[name][id]["h"] - 1
 				if Server.world.map[name][id]["h"] - 1 <= 0:
 					Server.world.map[name].erase(id)
@@ -84,4 +84,3 @@ func onHit(data):
 			("decorations"):
 				var object_type = data["d"]["t"]
 				Server.world.map["decorations"][object_type].erase(id)
-				print("erasing object from world " + str(id))

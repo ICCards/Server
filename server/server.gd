@@ -90,6 +90,3 @@ func _on_data(player_id):
 			ws.get_peer(player_id).put_packet(message)
 		("action"):
 			Actions.action(player_id,result)
-			var message = Util.toMessage("ReceivedAction", responses)
-			for id in players.keys():
-				ws.get_peer(id).put_packet(message)

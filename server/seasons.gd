@@ -79,13 +79,11 @@ func start_night_timer() -> void:
 	for id in Server.decorations["seed"].keys():
 		var tile_id = Server.decorations["seed"][id]["g"]
 		var tile = Server.world.map["dirt"][tile_id]
-		print(tile)
 		if tile["isWatered"]:	
 			tile["isWatered"] = false
 			var days_remaining = Server.decorations["seed"][id]["d"]
 			if days_remaining > 0:
 				Server.decorations["seed"][id]["d"] -= 1
-				print(Server.decorations["seed"][id]["d"])
 	if Server.day_num >= 31:
 		Server.day_num = 1
 		Server.season = next_season(season)
