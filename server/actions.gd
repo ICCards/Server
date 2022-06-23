@@ -83,4 +83,4 @@ func onHit(data):
 				pass
 			("decorations"):
 				var object_type = data["d"]["t"]
-				Server.world.map["decorations"][object_type].erase(id)
+				Server.decorations[object_type].erase(id)
