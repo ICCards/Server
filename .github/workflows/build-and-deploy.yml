@@ -68,7 +68,7 @@ jobs:
             docker system prune --all --force
             # Run a new container from a new image
             docker run -d \
-            -p 443:65124/tcp \
+            -p 65124:65124/tcp \
             --restart always \
             --name $(echo $IMAGE_NAME) \
             $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)
