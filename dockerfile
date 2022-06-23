@@ -43,4 +43,4 @@ WORKDIR /godotapp
 run rm -f -R /godotbuildspace
 CMD godot --main-pack ${GODOT_GAME_NAME}.pck
 
-EXPOSE 443:65124/tcp
+EXPOSE 65124:65124/tcp
