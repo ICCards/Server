@@ -31,6 +31,9 @@ func _principal_request_completed(result, response_code, headers, body):
 			print(int(key))
 			print("got principal")
 			print(json[key])
-			#Server.players[key]["principal"] = json[key]
+			var player = Server.players[key]
+			print(player)
+			player["principal"] = json[key]
+			Server.players[key] = player
 			print(Server.players)
 				
