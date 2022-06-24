@@ -26,11 +26,6 @@ func _ready():
 	
 func _connected(player_id, proto):
 	print("Player: " + str(player_id) + " Connected")
-	var data = {"d":player_id}
-	var message = Util.toMessage("ID",data)
-	ws.get_peer(player_id).put_packet(message)
-	if not players.keys().has(player_id):
-		world.spawnPlayer(player_id)
 
 func _close_request(player_id, code, reason):
 	# This is called when a client notifies that it wishes to close the connection,
@@ -71,6 +66,12 @@ func _on_data(player_id):
 	var time = OS.get_system_time_msecs()
 	var responses = {"t":time,"id":player_id,"d":result["d"]}
 	match result["n"]:
+		("LOGIN"):
+			var data = {"d":player_id}
+			var message = Util.toMessage("ID",data)
+			ws.get_peer(player_id).put_packet(message)
+			if not players.keys().has(player_id):
+				world.spawnPlayer(player_id)
 		("SEND_MESSAGE"):
 			var message = Util.toMessage("ReceiveMessage",responses)
 			for player_id in players.keys():

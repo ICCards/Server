@@ -20,6 +20,7 @@ Server="*res://server/server.gd"
 Seasons="*res://server/seasons.gd"
 Util="*res://helpers/Util.gd"
 Actions="*res://server/actions.gd"
+IC="*res://helpers/IC.gd"
 
 [display]
 
