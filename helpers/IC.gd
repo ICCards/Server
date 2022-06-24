@@ -22,8 +22,10 @@ func _principal_request_completed(result, response_code, headers, body):
 	if response_code == 200:
 		var json = JSON.parse(body.get_string_from_utf8()).result
 		print(json)
-		var key = json.keys().front()
-		if Server.players.has(key):
-			print("got principal")
-			print(json[key])
-			Server.players[key]["principal"] = json[key]
+		if not json.keys().empty():
+			var key = json.keys()[0]
+			print(key)
+			if Server.players.has(int(key)):
+				print("got principal")
+				print(json[key])
+				Server.players[key]["principal"] = json[key]
