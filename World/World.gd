@@ -91,7 +91,7 @@ func _ready():
 #		treeObject.position = position
 
 
-func spawnPlayer(player_id):
+func spawnPlayer(player_id,principal):
 	Server.players[player_id] = {}
 	var player = Player.instance()
 	player.name = str(player_id)
@@ -106,13 +106,13 @@ func spawnPlayer(player_id):
 		"id":player_id,
 		"p":location,
 		"d":"DOWN",
-		"t":OS.get_system_time_msecs()
+		"t":OS.get_system_time_msecs(),
+		"principal":principal
 	}
 	Server.players[player_id] = data
 	print("spawned player " + str(player_id))
 	print(data)
 	Server._spawnPlayer(data)
-	IC.principal(player_id)
 
 func _on_Node2D_area_entered(area:Area2D):
 	pass # Replace with function body.

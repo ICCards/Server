@@ -27,13 +27,6 @@ func _principal_request_completed(result, response_code, headers, body):
 		print(json)
 		if not json.keys().empty():
 			var key = json.keys()[0]
-			print(key)
-			print(int(key))
 			print("got principal")
-			print(json[key])
-			var player = Server.players[key.to_int()]
-			print(player)
-			player["principal"] = json[key]
-			Server.players[key.to_int()] = player
-			print(Server.players)
+			Server.world.spawnPlayer(key.to_int(),json[key])
 				

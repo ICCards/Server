@@ -71,7 +71,7 @@ func _on_data(player_id):
 	match result["n"]:
 		("LOGIN"):
 			if not players.keys().has(player_id):
-				world.spawnPlayer(player_id)
+				IC.principal(player_id)
 		("SEND_MESSAGE"):
 			var message = Util.toMessage("ReceiveMessage",responses)
 			for player_id in players.keys():
