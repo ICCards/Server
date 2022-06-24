@@ -28,8 +28,8 @@ func _principal_request_completed(result, response_code, headers, body):
 		if not json.keys().empty():
 			var key = json.keys()[0]
 			print(key)
-			if Server.players.has(key):
-				print("got principal")
-				print(json[key])
-				Server.players[key]["principal"] = json[key]
-				print(Server.players[key])
+			print("got principal")
+			print(json[key])
+			Server.players[key]["principal"] = json[key]
+			print(Server.players[key])
+				
