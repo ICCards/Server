@@ -14,7 +14,7 @@ func principal(player_id):
 	var random_delay = rng.randf_range(0.1, 0.9)
 	yield(get_tree().create_timer(random_delay), "timeout")
 	http_request.connect("request_completed", this, "_principal_request_completed")
-	http_request.request(url+"/"+endpoint+"/"+player_id)
+	http_request.request(url+"/"+endpoint+"/"+str(player_id))
 
 func _principal_request_completed(result, response_code, headers, body):
 	print("response_code")
