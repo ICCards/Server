@@ -92,7 +92,7 @@ func _ready():
 
 
 func spawnPlayer(player_id):
-	Server.players[player_id] ={}
+	Server.players[player_id] = {}
 	var player = Player.instance()
 	player.name = str(player_id)
 	characters.shuffle()
@@ -112,7 +112,7 @@ func spawnPlayer(player_id):
 	print("spawned player " + str(player_id))
 	print(data)
 	Server._spawnPlayer(data)
-	IC.getUsername(str(player_id))
+	#IC.getUsername(str(player_id))
 
 func _on_Node2D_area_entered(area:Area2D):
 	pass # Replace with function body.

@@ -29,6 +29,7 @@ func _connected(player_id, proto):
 	var data = {"d":player_id}
 	var message = Util.toMessage("ID",data)
 	ws.get_peer(player_id).put_packet(message)
+	
 func _close_request(player_id, code, reason):
 	# This is called when a client notifies that it wishes to close the connection,
 	# providing a reason string and close code.
