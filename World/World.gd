@@ -92,7 +92,6 @@ func _ready():
 
 
 func spawnPlayer(player_id,principal):
-	Server.players[player_id] = {}
 	var player = Player.instance()
 	player.name = str(player_id)
 	characters.shuffle()
