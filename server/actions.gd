@@ -4,7 +4,7 @@ func action(player_id,message):
 	match message["t"]:
 		("MOVEMENT"):
 			print("updating movement")
-			print(message)
+			print(Server.players)
 			if Server.players[player_id]["t"] < message["d"]["t"]:
 				Server.players[player_id]["p"] = message["d"]["p"]
 				Server.players[player_id]["d"] = message["d"]["d"]
