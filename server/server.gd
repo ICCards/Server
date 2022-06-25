@@ -94,4 +94,4 @@ func _on_data(player_id):
 			var message = Util.toMessage("ReturnLatency",data)
 			ws.get_peer(player_id).put_packet(message)
 		("action"):
-			Actions.action(player_id.toInt(),result)
+			Actions.action(player_id.to_int(),result)
