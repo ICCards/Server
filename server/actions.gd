@@ -88,3 +88,6 @@ func onHit(data):
 			("decorations"):
 				var type = data["d"]["item"]
 				Server.decorations[type].erase(id)
+				var response = Util.toMessage("ON_HIT",data["d"])
+				for player_id in Server.players.keys():
+					Server.ws.get_peer(player_id).put_packet(response)
