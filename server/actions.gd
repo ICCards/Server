@@ -50,7 +50,6 @@ func action(player_id,message):
 func onHit(data):
 	if not data.empty():
 		var name = data["d"]["n"]
-		var item = data["d"]["item"]
 		var id = data["d"]["id"]
 		print(data)
 		match name:
@@ -87,4 +86,5 @@ func onHit(data):
 			("flower"):
 				pass
 			("decorations"):
+				var item = data["d"]["item"]
 				Server.decorations[item].erase(id)
