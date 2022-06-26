@@ -14,9 +14,9 @@ func action(player_id,message):
 				Server.ws.get_peer(id).put_packet(response)
 		("ON_HIT"):
 			onHit(message)
-			var response = Util.toMessage("ReceivedAction", message)
-			for id in Server.players.keys():
-				Server.ws.get_peer(id).put_packet(response)
+			#var response = Util.toMessage("ReceivedAction", message)
+			#for id in Server.players.keys():
+				#Server.ws.get_peer(id).put_packet(response)
 		("PLACE_ITEM"):
 			var id = message["d"]["id"]
 			var object_type = message["d"]["t"]
@@ -49,7 +49,7 @@ func action(player_id,message):
 func onHit(data):
 	if not data.empty():
 		var name = data["n"]
-		var id = data["d"]["id"]
+		var id = data["id"]
 		match name:
 			("dirt"):
 				pass
@@ -84,10 +84,4 @@ func onHit(data):
 			("flower"):
 				pass
 			("decorations"):
-				var object_type = data["d"]["t"]
-				print("will delete object")
-				print(object_type)
-				print("with id")
-				print(id)
-				print(data)
-				Server.decorations[object_type].erase(id)
+				Server.decorations[name].erase(id)
