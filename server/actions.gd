@@ -22,7 +22,7 @@ func action(player_id,message):
 			var id = message["d"]["id"]
 			var item = message["d"]["item"]
 			Server.decorations[item][id] = message["d"]
-			var response = Util.toMessage("PLACE_ITEM",message["d"])
+			var response = Util.toMessage("PLACE_ITEM",message)
 			for player_id in Server.players.keys():
 				Server.ws.get_peer(player_id).put_packet(response)
 		("HOE"):
