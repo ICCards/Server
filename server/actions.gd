@@ -70,22 +70,37 @@ func onHit(data):
 				Server.world.map[name][id]["h"] - 1
 				if Server.world.map[name][id]["h"] - 1 <= 0:
 					Server.world.map[name].erase(id)
+				var response = Util.toMessage("ReceivedAction",data)
+				for player_id in Server.players.keys():
+					Server.ws.get_peer(player_id).put_packet(response)
 			("ore_large"):
 				Server.world.map[name][id]["h"] - 1
 				if Server.world.map[name][id]["h"] - 1 <= 0:
 					Server.world.map[name].erase(id)
+				var response = Util.toMessage("ReceivedAction",data)
+				for player_id in Server.players.keys():
+					Server.ws.get_peer(player_id).put_packet(response)
 			("ore"):
 				Server.world.map[name][id]["h"] - 1
 				if Server.world.map[name][id]["h"] - 1 <= 0:
 					Server.world.map[name].erase(id)
+				var response = Util.toMessage("ReceivedAction",data)
+				for player_id in Server.players.keys():
+					Server.ws.get_peer(player_id).put_packet(response)
 			("log"):
 				Server.world.map[name][id]["h"] - 1
 				if Server.world.map[name][id]["h"] - 1 <= 0:
 					Server.world.map[name].erase(id)
+				var response = Util.toMessage("ReceivedAction",data)
+				for player_id in Server.players.keys():
+					Server.ws.get_peer(player_id).put_packet(response)
 			("stump"):
 				Server.world.map[name][id]["h"] - 1
 				if Server.world.map[name][id]["h"] - 1 <= 0:
 					Server.world.map[name].erase(id)
+				var response = Util.toMessage("ReceivedAction",data)
+				for player_id in Server.players.keys():
+					Server.ws.get_peer(player_id).put_packet(response)
 			("flower"):
 				pass
 			("decorations"):
