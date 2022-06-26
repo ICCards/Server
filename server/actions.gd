@@ -86,5 +86,5 @@ func onHit(data):
 			("flower"):
 				pass
 			("decorations"):
-				var item = data["d"]["item"]
-				Server.decorations[item].erase(id)
+				var type = data["d"]["item"]
+				Server.decorations[type].erase(id)
