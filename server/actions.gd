@@ -20,8 +20,8 @@ func action(player_id,message):
 		("PLACE_ITEM"):
 			print(message)
 			var id = message["d"]["id"]
-			var object_type = message["d"]["item"]
-			Server.decorations[object_type][id] = message["d"]
+			var item = message["d"]["item"]
+			Server.decorations[item][id] = message["d"]
 		("HOE"):
 			var id = message["d"]["id"]
 			Server.world.map["dirt"][id]["isHoed"] = true
