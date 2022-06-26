@@ -20,7 +20,7 @@ func action(player_id,message):
 		("PLACE_ITEM"):
 			print(message)
 			var id = message["d"]["id"]
-			var object_type = message["d"]["t"]
+			var object_type = message["d"]["item"]
 			Server.decorations[object_type][id] = message["d"]
 		("HOE"):
 			var id = message["d"]["id"]
@@ -50,6 +50,7 @@ func action(player_id,message):
 func onHit(data):
 	if not data.empty():
 		var name = data["d"]["n"]
+		var item = data["d"]["item"]
 		var id = data["d"]["id"]
 		print(data)
 		match name:
@@ -86,4 +87,4 @@ func onHit(data):
 			("flower"):
 				pass
 			("decorations"):
-				Server.decorations[name].erase(id)
+				Server.decorations[item].erase(id)
