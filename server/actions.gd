@@ -85,4 +85,9 @@ func onHit(data):
 				pass
 			("decorations"):
 				var object_type = data["d"]["t"]
+				print("will delete object")
+				print(object_type)
+				print("with id")
+				print(id)
+				print(data)
 				Server.decorations[object_type].erase(id)
