@@ -18,6 +18,7 @@ func action(player_id,message):
 			#for id in Server.players.keys():
 				#Server.ws.get_peer(id).put_packet(response)
 		("PLACE_ITEM"):
+			print(message)
 			var id = message["d"]["id"]
 			var object_type = message["d"]["t"]
 			Server.decorations[object_type][id] = message["d"]
@@ -48,8 +49,9 @@ func action(player_id,message):
 
 func onHit(data):
 	if not data.empty():
-		var name = data["n"]
-		var id = data["id"]
+		var name = data["d"]["n"]
+		var id = data["d"]["id"]
+		print(data)
 		match name:
 			("dirt"):
 				pass
