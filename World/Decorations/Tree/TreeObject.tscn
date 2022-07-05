@@ -66,3 +66,5 @@ rotation = -1.5708
 shape = SubResource( 21 )
 
 [connection signal="area_entered" from="." to="." method="_on_TreeObject_area_entered"]
+[connection signal="area_entered" from="StumpHurtBox" to="." method="_on_StumpHurtBox_area_entered"]
+[connection signal="area_entered" from="TreeHurtbox" to="." method="_on_TreeHurtbox_area_entered"]

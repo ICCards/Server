@@ -1,5 +1,5 @@
 FROM alpine:latest
-
+#
 # Environment Variables
 ENV GODOT_VERSION "3.4.4"
 ENV GODOT_EXPORT_PRESET="Linux/X11"
@@ -34,7 +34,6 @@ RUN mkdir /godotbuildspace
 
 # Move to the build space and export the .pck
 WORKDIR /godotbuildspace
-RUN ls
 RUN git clone ${HTTPS_GIT_REPO} .
 RUN godot --path /godotbuildspace --export-pack ${GODOT_EXPORT_PRESET} ${GODOT_GAME_NAME}.pck
 RUN mv ${GODOT_GAME_NAME}.pck /godotapp/
@@ -44,4 +43,4 @@ WORKDIR /godotapp
 run rm -f -R /godotbuildspace
 CMD godot --main-pack ${GODOT_GAME_NAME}.pck
 
-EXPOSE 45124:65124/udp
+EXPOSE 65124:65124/tcp
