@@ -7,9 +7,6 @@ func jsonParse(body):
   return jsonParseResult.result
 
 func toMessage(name, data):
-	if name == "loadMap":
-		var mapData = {"d":data,"n":name}
-		return JSON.print(mapData).to_utf8()
-	else:	
-		data["n"] = name
-		return JSON.print(data).to_utf8()
+	data["n"] = name
+	return JSON.print(data).to_utf8()
+		

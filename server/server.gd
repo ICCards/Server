@@ -65,33 +65,31 @@ func _spawnPlayer(data):
 
 func _on_data(player_id):
 	var pkt = ws.get_peer(player_id).get_packet()
+	var message = Message.new()
+	message.fromJson(pkt)
 	var result = Util.jsonParse(pkt)
 	var time = OS.get_system_time_msecs()
-	var responses = {"t":time,"id":player_id,"d":result["d"]}
 	match result["n"]:
 		("LOGIN"):
 			if not players.keys().has(player_id):
 				IC.principal(player_id)
 		("SEND_MESSAGE"):
-			var message = Util.toMessage("ReceiveMessage",responses)
+			var responses = {"t":time,"id":player_id,"d": message.data}
+			var value = Util.toMessage("ReceiveMessage",responses)
 			for player_id in players.keys():
-				ws.get_peer(player_id).put_packet(message)
+				ws.get_peer(player_id).put_packet(value)
 		("getMap"):
-			print("geting map")
-			var key = result["d"]
-			print(key)
-			var message = Util.toMessage("loadMap",world.map[key])
+			var data = {"d":message.data}
+			var value = Util.toMessage("loadMap",world.map[data])
 			ws.get_peer(player_id).put_packet(message)
 		("FetchServerTime"):
-			var client_time = result["d"]
-			var data = {"s":OS.get_system_time_msecs(),"c":client_time}
-			var value = {"d":data}
-			var message = Util.toMessage("ReturnServerTime",value)
+			var data = {"s":OS.get_system_time_msecs(),"c":message.data}
+			var response = {"d":data}
+			var value = Util.toMessage("ReturnServerTime",response)
 			ws.get_peer(player_id).put_packet(message)
 		("DetermineLatency"):
-			var client_time = result["d"]
-			var data = {"d":client_time}
-			var message = Util.toMessage("ReturnLatency",data)
-			ws.get_peer(player_id).put_packet(message)
+			var data = {"d":message.data}
+			var value = Util.toMessage("ReturnLatency",data)
+			ws.get_peer(player_id).put_packet(value)
 		("action"):
 			Actions.action(player_id,result)
