@@ -16,7 +16,7 @@ export var NUM_TREES = 1000
 export var NUM_LOGS = 1000
 export var NUM_STUMPS = 1000
 export var NUM_ORE = 1000
-export var NUM_ORE_LARGE = 2000
+export var NUM_ORE_LARGE = 1000
 export var NUM_FLOWER = 500
 export var MAX_GRASS_BUNCH_SIZE = 500
 var rng = RandomNumberGenerator.new()
@@ -24,6 +24,7 @@ onready var tile_maps = [_Tree,Stump,Log,Ore_Large,Ore,Flower]
 var _uuid = preload("res://helpers/UUID.gd")
 onready var uuid = _uuid.new()
 
+var decoration_locations = []
 
 func _ready() -> void:
 	randomize()
@@ -84,81 +85,64 @@ func generate_trees():
 		if isValidTreeTile(location):
 			create_log(location)
 
+func generate_ores():
+	for _i in range(NUM_ORE_LARGE):
+		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
+		if isValidOreTile(location):
+			create_ore_large(location)
+	for _i in range(NUM_ORE):
+		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
+		if isValidOreTile(location):
+			create_ore(location)
+			
 func generate_flowers():
 	for _i in range(NUM_FLOWER):
 		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
 		if isValidTreeTile(location):
 			create_flower(location)
 
-func generate_ores():
-	for _i in range(NUM_ORE):
-		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, 0 - height))
-		if isValidOreTile(location):
-			create_ore_large(location)
-	for _i in range(NUM_ORE_LARGE):
-		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
-		if isValidOreTile(location):
-			create_ore(location)
-
 func create_flower(loc):
 	var id = uuid.v4()
-	if check_loc(loc):
+	if check_loc(loc) and isValidPosition(loc):
 		get_parent().map["flower"][id] = {"l":loc,"h":5}
 		Flower.set_cellv(loc,0)
-	else:
-		rng.randomize()
-		loc += Vector2(rng.randi_range(-1, 1), rng.randi_range(-1, 1))
-		create_tree(loc)
+		decoration_locations.append(loc)
 
 func create_tree(loc):
 	var id = uuid.v4()
-	if check_64x64(loc):
+	if check_64x64(loc) and isValidPosition(loc):
 		get_parent().map["tree"][id] = {"l":loc,"h":8}
 		_Tree.set_cellv(loc,0)
-	else:
-		rng.randomize()
-		loc += Vector2(rng.randi_range(-1, 1), rng.randi_range(-1, 1))
-		create_tree(loc)
+		decoration_locations.append(loc)
 		
 func create_stump(loc):
 	var id = uuid.v4()
-	if check_64x64(loc):
+	if check_64x64(loc) and isValidPosition(loc):
 		get_parent().map["stump"][id] = {"l":loc,"h":3}
 		Stump.set_cellv(loc,0)
-	else:
-		rng.randomize()
-		loc += Vector2(rng.randi_range(-1, 1), rng.randi_range(-1, 1))
-		create_stump(loc)
+		decoration_locations.append(loc)
 	
 func create_log(loc):
 	var id = uuid.v4()
-	if check_64x64(loc):
+	if check_64x64(loc) and isValidPosition(loc):
 		get_parent().map["log"][id] = {"l":loc,"h":1}
 		Log.set_cellv(loc,0)
-	else:
-		rng.randomize()
-		loc += Vector2(rng.randi_range(-1, 1), rng.randi_range(-1, 1))
-		create_log(loc)
+		decoration_locations.append(loc)
 		
 func create_ore_large(loc):
 	var id = uuid.v4()
-	if check_64x64(loc):
+	if check_64x64(loc) and isValidPosition(loc):
+		print("spawning large ore")
 		get_parent().map["ore_large"][id] = {"l":loc,"h":8}
 		Ore_Large.set_cellv(loc,0)
-	else:
-		rng.randomize()
-		loc += Vector2(rng.randi_range(-1, 1), rng.randi_range(-1, 1))
-		create_ore_large(loc)
+		decoration_locations.append(loc)
 
 func create_ore(loc):
 	var id = uuid.v4()
-	if check_64x64(loc):
+	if check_64x64(loc) and isValidPosition(loc):
 		get_parent().map["ore"][id] = {"l":loc,"h":3}
 		Ore.set_cellv(loc,0)
-	else:
-		rng.randomize()
-		loc += Vector2(rng.randi_range(-1, 1), rng.randi_range(-1, 1))
-		create_ore(loc)
+		decoration_locations.append(loc)
 
 func isValidGrassTile(position):
 	if Ground.get_cellv(position) == 1 or Ground.get_cellv(position) == 2:
@@ -187,6 +171,12 @@ func check_64x64(loc):
 			return false
 	return true
 
+func isValidPosition(loc):
+	if decoration_locations.has(loc):
+		return false
+	else:
+		return true
+		
 func check_loc(loc):
 	for tile_map in tile_maps:
 		if not tile_map.get_cellv(loc) == -1:
