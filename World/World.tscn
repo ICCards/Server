@@ -45,6 +45,7 @@ cell_size = Vector2( 32, 32 )
 format = 1
 
 [node name="Ore" type="TileMap" parent="Terrian"]
+visible = false
 tile_set = ExtResource( 6 )
 cell_size = Vector2( 32, 32 )
 format = 1
