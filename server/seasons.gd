@@ -56,7 +56,7 @@ func _ready():
 func _process(delta):
 	time_now = OS.get_unix_time()
 	var time_elapsed = time_now - time_start
-	if time_elapsed == 49:
+	if time_elapsed > LENGTH_OF_CYCLE:
 		time_start = OS.get_unix_time()
 		Server.time_elapsed = 0
 	else:
