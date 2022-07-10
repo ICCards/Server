@@ -79,14 +79,14 @@ func _on_data(player_id):
 			for player_id in players.keys():
 				ws.get_peer(player_id).put_packet(value)
 		("getMap"):
-			var data = {"d":message.data}
-			var value = Util.toMessage("loadMap",world.map[data])
-			ws.get_peer(player_id).put_packet(message)
+			var data = {"d":world.map[message.data]}
+			var value = Util.toMessage("loadMap",data)
+			ws.get_peer(player_id).put_packet(value)
 		("FetchServerTime"):
 			var data = {"s":OS.get_system_time_msecs(),"c":message.data}
 			var response = {"d":data}
 			var value = Util.toMessage("ReturnServerTime",response)
-			ws.get_peer(player_id).put_packet(message)
+			ws.get_peer(player_id).put_packet(value)
 		("DetermineLatency"):
 			var data = {"d":message.data}
 			var value = Util.toMessage("ReturnLatency",data)
