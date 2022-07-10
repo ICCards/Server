@@ -132,7 +132,6 @@ func create_log(loc):
 func create_ore_large(loc):
 	var id = uuid.v4()
 	if check_64x64(loc) and isValidPosition(loc):
-		print("spawning large ore")
 		get_parent().map["ore_large"][id] = {"l":loc,"h":8}
 		Ore_Large.set_cellv(loc,0)
 		decoration_locations.append(loc)

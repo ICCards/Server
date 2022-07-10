@@ -69,7 +69,7 @@ func _on_data(player_id):
 	message.fromJson(pkt)
 	var result = Util.jsonParse(pkt)
 	var time = OS.get_system_time_msecs()
-	match result["n"]:
+	match message.message_name:
 		("LOGIN"):
 			if not players.keys().has(player_id):
 				IC.principal(player_id)
