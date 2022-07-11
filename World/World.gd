@@ -92,7 +92,7 @@ func _ready():
 
 
 func spawnPlayer(player_id,principal):
-	var player = Player.instance()
+	var player = Player.new()
 	player.name = str(player_id)
 	characters.shuffle()
 	player.data["character"] = characters.front()
@@ -100,18 +100,15 @@ func spawnPlayer(player_id,principal):
 	var location = Vector2(rng.randi_range(0, 300), rng.randi_range(0, 300))
 	#player.position = Ground.map_to_world(location)
 	add_child(player,true)
-	var data = {
-		"c":characters.front(),
-		"id":player_id,
-		"p":location,
-		"d":"DOWN",
-		"t":OS.get_system_time_msecs(),
-		"principal":principal
-	}
-	Server.players[player_id] = data
+	player.characters = characters.front()
+	player.principal = principal
+	player.player_id = player_id
+	player.location = location
+	player.direction = "DOWN"
+	Server.players[player.player_id] = player.toJson()
 	print("spawned player " + str(player_id))
-	print(data)
-	Server._spawnPlayer(data)
+	print(player.toJson())
+	Server._spawnPlayer(player.toJson())
 
 func _on_Node2D_area_entered(area:Area2D):
 	pass # Replace with function body.

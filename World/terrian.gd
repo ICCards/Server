@@ -1,7 +1,7 @@
 extends Node2D
 
-export var width := 300
-export var height := 300
+export var width := 1000
+export var height := 1000
 var openSimplexNoise := OpenSimplexNoise.new()
 onready var Ground = $Ground
 onready var Grass = $Grass
@@ -24,37 +24,86 @@ onready var tile_maps = [_Tree,Stump,Log,Ore_Large,Ore,Flower]
 var _uuid = preload("res://helpers/UUID.gd")
 onready var uuid = _uuid.new()
 
+var altittude = {}
+var temperature = {}
+var moisture = {}
+
 var decoration_locations = []
 
 func _ready() -> void:
 	randomize()
-	openSimplexNoise.seed = randi()
-	openSimplexNoise.octaves = 5
-	generate_map()
-	generate_grass_bunches()
-	generate_trees()
-	generate_ores()
-	generate_flowers()
+	temperature = generate_island_map(5,300)
+	moisture = generate_island_map(5,300)
+	altittude = generate_island_map(5,150)
+	build_terrian()
+#	generate_grass_bunches()
+#	generate_trees()
+#	generate_ores()
+#	generate_flowers()
 	print("done")
-	
-func generate_map() -> void:
+
+func generate_map(octaves,period):
+	var grid = {}
+	openSimplexNoise.seed = randi()
+	openSimplexNoise.octaves = octaves
+	openSimplexNoise.period = period
 	for x in width:
 		for y in height:
-			var rand := floor((abs(openSimplexNoise.get_noise_2d(x,y)))*6)
-			var id = uuid.v4()
-			match rand:
-				float(0):
-					get_parent().map["dirt"][id] = {"l":Vector2(x,y), "isWatered":false, "isHoed":false}
-				float(1):
-					get_parent().map["dark_grass"][id] = (Vector2(x,y)) 
-				float(2):	
-					get_parent().map["grass"][id] = (Vector2(x,y))
-				float(3):	
-					get_parent().map["water"][id] = (Vector2(x,y)) 
-				float(4):	
-					get_parent().map["water"][id] = (Vector2(x,y)) 
-			Ground.set_cell(x,y, rand)
-
+			#var rand := floor((abs(openSimplexNoise.get_noise_2d(x,y)))*11)
+			var value = openSimplexNoise.get_noise_2d(x,y)
+			grid[Vector2(x,y)] = value
+	return grid
+	
+func generate_island_map(octaves,period):
+	var grid = {}
+	openSimplexNoise.seed = randi()
+	openSimplexNoise.octaves = octaves
+	openSimplexNoise.period = period
+	var custom_gradient = CustomGradientTexture.new()
+	custom_gradient.gradient = Gradient.new()
+	custom_gradient.type = CustomGradientTexture.GradientType.RADIAL
+	custom_gradient.size = Vector2(width,height)
+	var gradient_data = custom_gradient.get_data()
+	gradient_data.lock()
+	for x in width:
+		for y in height:
+			#var rand := floor((abs(openSimplexNoise.get_noise_2d(x,y)))*11)
+			var gradient_value = gradient_data.get_pixel(x,y).r * 1.5
+			var value = openSimplexNoise.get_noise_2d(x,y)
+			value += gradient_value
+			grid[Vector2(x,y)] = value
+	return grid
+	
+func build_terrian():
+	for x in width:
+		for y in height:
+			var pos = Vector2(x,y)
+			var alt = altittude[pos]
+			var temp = temperature[pos]
+			var moist = moisture[pos]
+			print(alt)
+			#Ocean
+			if alt > 0.8:
+				Ground.set_cell(x,y, 3)
+			#Beach	
+			elif between(alt,0.75,0.8):
+				Ground.set_cell(x,y, 5)
+			#Biomes	
+			elif between(alt,-1.4,0.8):
+				Ground.set_cell(x,y, 0)
+				#grassland
+				if between(moist,0,0.4) and between(temp,0.2,0.6):
+					Ground.set_cell(x,y, 1)
+				#forest
+				if between(moist,0.35,0.85) and temp > 0.6:
+					Ground.set_cell(x,y, 2)
+				if temp > 0.7 and moist < 0.4:
+					Ground.set_cell(x,y, 5)
+				if temp < 0.2:
+					Ground.set_cell(x,y, 6)
+			else:
+				Ground.set_cell(x,y, 0)
+			
 func generate_grass_bunches():
 	for _i in range(NUM_GRASS_BUNCHES):
 		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
@@ -182,6 +231,22 @@ func check_loc(loc):
 			return false
 	return true
 
+func between(val, start, end):
+	if start <= val and val < end:
+		return true	
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_end"):
 		get_tree().reload_current_scene()
+
+#get_parent().map["dirt"][id] = {"l":Vector2(x,y), "isWatered":false, "isHoed":false} 	
+#			match rand:
+#				float(0):
+#					get_parent().map["dirt"][id] = {"l":Vector2(x,y), "isWatered":false, "isHoed":false}
+#				float(1):
+#					get_parent().map["dark_grass"][id] = (Vector2(x,y)) 
+#				float(2):	
+#					get_parent().map["grass"][id] = (Vector2(x,y))
+#				float(3):	
+#					get_parent().map["water"][id] = (Vector2(x,y)) 
+#				float(4):	
+#					get_parent().map["water"][id] = (Vector2(x,y)) 
