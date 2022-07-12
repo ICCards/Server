@@ -29,6 +29,7 @@ var map = {
 	"desert":{},
 	"snow":{},
 	"tree":{},
+	"tall_grass":{},
 	"ore_large":{},
 	"ore":{},
 	"log":{},
