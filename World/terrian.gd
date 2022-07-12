@@ -81,28 +81,38 @@ func build_terrian():
 			var alt = altittude[pos]
 			var temp = temperature[pos]
 			var moist = moisture[pos]
-			print(alt)
+			var id = uuid.v4()
 			#Ocean
 			if alt > 0.8:
 				Ground.set_cell(x,y, 3)
+				get_parent().map["ocean"][id] = (Vector2(x,y))
 			#Beach	
 			elif between(alt,0.75,0.8):
 				Ground.set_cell(x,y, 5)
+				get_parent().spawnable_locations.append(Vector2(x,y))
+				get_parent().map["beach"][id] = (Vector2(x,y))
 			#Biomes	
 			elif between(alt,-1.4,0.8):
 				Ground.set_cell(x,y, 0)
-				#grassland
+				#plains
 				if between(moist,0,0.4) and between(temp,0.2,0.6):
 					Ground.set_cell(x,y, 1)
+					get_parent().map["plains"][id] = (Vector2(x,y))
 				#forest
 				if between(moist,0.35,0.85) and temp > 0.6:
 					Ground.set_cell(x,y, 2)
+					get_parent().map["forest"][id] = (Vector2(x,y))
+				#desert	
 				if temp > 0.7 and moist < 0.4:
 					Ground.set_cell(x,y, 5)
+					get_parent().map["desert"][id] = (Vector2(x,y))
+				#snow	
 				if temp < 0.2:
 					Ground.set_cell(x,y, 6)
+					get_parent().map["snow"][id] = (Vector2(x,y))
 			else:
 				Ground.set_cell(x,y, 0)
+				get_parent().map["dirt"][id] = (Vector2(x,y))
 			
 func generate_grass_bunches():
 	for _i in range(NUM_GRASS_BUNCHES):
