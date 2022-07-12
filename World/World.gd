@@ -37,8 +37,6 @@ var map = {
 	"tile": {},
 }
 
-
-
 func _ready():
 	set_meta('type',type)
 	Server.world = self

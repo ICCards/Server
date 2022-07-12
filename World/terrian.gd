@@ -12,9 +12,9 @@ onready var Ore = $Ore
 onready var Ore_Large = $Ore_Large
 onready var Flower = $Flower
 export var NUM_GRASS_BUNCHES = 500
-export var NUM_TREES = 1000
-export var NUM_LOGS = 1000
-export var NUM_STUMPS = 1000
+#export var NUM_TREES = 1000
+#export var NUM_LOGS = 1000
+#export var NUM_STUMPS = 1000
 export var NUM_ORE = 1000
 export var NUM_ORE_LARGE = 1000
 export var NUM_FLOWER = 500
@@ -32,29 +32,20 @@ var decoration_locations = []
 
 func _ready() -> void:
 	randomize()
-	temperature = generate_island_map(5,300)
-	moisture = generate_island_map(5,300)
-	altittude = generate_island_map(5,150)
+	temperature = generate_map(5,300)
+	moisture = generate_map(5,300)
+	altittude = generate_map(5,150)
 	build_terrian()
+	generate_trees(get_parent().map["snow"].values())
+	generate_trees(get_parent().map["forest"].values())
+	generate_trees(get_parent().map["desert"].values())
 #	generate_grass_bunches()
 #	generate_trees()
 #	generate_ores()
 #	generate_flowers()
 	print("done")
-
-func generate_map(octaves,period):
-	var grid = {}
-	openSimplexNoise.seed = randi()
-	openSimplexNoise.octaves = octaves
-	openSimplexNoise.period = period
-	for x in width:
-		for y in height:
-			#var rand := floor((abs(openSimplexNoise.get_noise_2d(x,y)))*11)
-			var value = openSimplexNoise.get_noise_2d(x,y)
-			grid[Vector2(x,y)] = value
-	return grid
 	
-func generate_island_map(octaves,period):
+func generate_map(octaves,period):
 	var grid = {}
 	openSimplexNoise.seed = randi()
 	openSimplexNoise.octaves = octaves
@@ -98,18 +89,22 @@ func build_terrian():
 				if between(moist,0,0.4) and between(temp,0.2,0.6):
 					Ground.set_cell(x,y, 1)
 					get_parent().map["plains"][id] = (Vector2(x,y))
+					#generate_trees(get_parent().map["plains"].values())
 				#forest
 				if between(moist,0.35,0.85) and temp > 0.6:
 					Ground.set_cell(x,y, 2)
 					get_parent().map["forest"][id] = (Vector2(x,y))
+					#generate_trees(get_parent().map["forest"].values())
 				#desert	
 				if temp > 0.7 and moist < 0.4:
 					Ground.set_cell(x,y, 5)
 					get_parent().map["desert"][id] = (Vector2(x,y))
+					#generate_trees(get_parent().map["desert"].values())
 				#snow	
 				if temp < 0.2:
 					Ground.set_cell(x,y, 6)
 					get_parent().map["snow"][id] = (Vector2(x,y))
+					#generate_trees(get_parent().map["snow"].values())
 			else:
 				Ground.set_cell(x,y, 0)
 				get_parent().map["dirt"][id] = (Vector2(x,y))
@@ -130,19 +125,27 @@ func create_grass_bunch(loc):
 			get_parent().map["tall_grass"][id] = {"l":loc,"h":5}
 			Grass.set_cellv(loc,0)
 			
-func generate_trees():
+func generate_trees(locations):
+	print("Building Trees")
+	var NUM_TREES = int(locations.size()/100)
+	var NUM_STUMPS = int(locations.size()/120)
+	var NUM_LOGS = int(locations.size()/140)
+	print(NUM_TREES)
+	print(NUM_STUMPS)
+	print(NUM_LOGS)
 	for _i in range(NUM_TREES):
-		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
-		if isValidTreeTile(location):
-			create_tree(location)
+		var index = rng.randi_range(0, locations.size() - 1)
+		var location = locations[index]
+		print(location)
+		create_tree(location)
 	for _i in range(NUM_STUMPS):
-		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
-		if isValidTreeTile(location):
-			create_stump(location)
+		var index = rng.randi_range(0, locations.size() - 1)
+		var location = locations[index]
+		create_stump(location)
 	for _i in range(NUM_LOGS):
-		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
-		if isValidTreeTile(location):
-			create_log(location)
+		var index = rng.randi_range(0, locations.size() - 1)
+		var location = locations[index]
+		create_log(location)
 
 func generate_ores():
 	for _i in range(NUM_ORE_LARGE):

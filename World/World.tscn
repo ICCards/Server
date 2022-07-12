@@ -22,7 +22,6 @@ drag_margin_h_enabled = true
 
 [node name="Terrian" type="Node2D" parent="."]
 script = ExtResource( 3 )
-NUM_TREES = 3000
 MAX_GRASS_BUNCH_SIZE = 100
 
 [node name="Ground" type="TileMap" parent="Terrian"]
