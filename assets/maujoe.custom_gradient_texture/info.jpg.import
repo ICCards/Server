@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/spawn.png-f87dba3005a7b08b46a878502567ab2c.stex"
+path="res://.import/info.jpg-985e1ec887852c0f22df481c3bc5df20.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/spawn.png"
-dest_files=[ "res://.import/spawn.png-f87dba3005a7b08b46a878502567ab2c.stex" ]
+source_file="res://assets/maujoe.custom_gradient_texture/info.jpg"
+dest_files=[ "res://.import/info.jpg-985e1ec887852c0f22df481c3bc5df20.stex" ]
 
 [params]
 

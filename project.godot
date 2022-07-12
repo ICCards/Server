@@ -10,12 +10,30 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Node",
+"class": "Companion",
+"language": "GDScript",
+"path": "res://models/Companion.gd"
+}, {
+"base": "ImageTexture",
+"class": "CustomGradientTexture",
+"language": "GDScript",
+"path": "res://assets/maujoe.custom_gradient_texture/custom_gradient_texture.gd"
+}, {
+"base": "Node",
 "class": "Message",
 "language": "GDScript",
 "path": "res://models/Message.gd"
+}, {
+"base": "KinematicBody2D",
+"class": "Player",
+"language": "GDScript",
+"path": "res://models/Player.gd"
 } ]
 _global_script_class_icons={
-"Message": ""
+"Companion": "",
+"CustomGradientTexture": "",
+"Message": "",
+"Player": ""
 }
 
 [application]
