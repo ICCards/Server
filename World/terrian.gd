@@ -84,30 +84,35 @@ func build_terrian():
 				get_parent().map["beach"][id] = (Vector2(x,y))
 			#Biomes	
 			elif between(alt,-1.4,0.8):
-				Ground.set_cell(x,y, 0)
 				#plains
 				if between(moist,0,0.4) and between(temp,0.2,0.6):
 					Ground.set_cell(x,y, 1)
 					get_parent().map["plains"][id] = (Vector2(x,y))
 					#generate_trees(get_parent().map["plains"].values())
 				#forest
-				if between(moist,0.35,0.85) and temp > 0.6:
+				elif between(moist,0.35,0.85) and temp > 0.6:
 					Ground.set_cell(x,y, 2)
 					get_parent().map["forest"][id] = (Vector2(x,y))
 					#generate_trees(get_parent().map["forest"].values())
 				#desert	
-				if temp > 0.7 and moist < 0.4:
+				elif temp > 0.7 and moist < 0.4:
 					Ground.set_cell(x,y, 5)
 					get_parent().map["desert"][id] = (Vector2(x,y))
 					#generate_trees(get_parent().map["desert"].values())
 				#snow	
-				if temp < 0.2:
+				elif temp < 0.2:
 					Ground.set_cell(x,y, 6)
 					get_parent().map["snow"][id] = (Vector2(x,y))
 					#generate_trees(get_parent().map["snow"].values())
+				else:
+					#dirt
+					Ground.set_cell(x,y, 0)
+					get_parent().map["dirt"][id] = (Vector2(x,y))
 			else:
-				Ground.set_cell(x,y, 0)
+				pass
+				#Ground.set_cell(x,y, 0)
 				get_parent().map["dirt"][id] = (Vector2(x,y))
+				#print(get_parent().map["dirt"])
 			
 func generate_grass_bunches():
 	for _i in range(NUM_GRASS_BUNCHES):
@@ -136,7 +141,7 @@ func generate_trees(locations):
 	for _i in range(NUM_TREES):
 		var index = rng.randi_range(0, locations.size() - 1)
 		var location = locations[index]
-		print(location)
+		#print(location)
 		create_tree(location)
 	for _i in range(NUM_STUMPS):
 		var index = rng.randi_range(0, locations.size() - 1)
