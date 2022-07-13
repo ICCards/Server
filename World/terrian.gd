@@ -44,6 +44,8 @@ func _ready() -> void:
 	generate_ores(get_parent().map["snow"].values(),"snow")
 	generate_ores(get_parent().map["desert"].values(),"desert")
 	generate_ores(get_parent().map["dirt"].values(),"dirt")
+	generate_flowers(get_parent().map["forest"].values(),"forest")
+	generate_flowers(get_parent().map["plains"].values(),"plains")
 #	generate_grass_bunches()
 #	generate_trees()
 #	generate_ores()
