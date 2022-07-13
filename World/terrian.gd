@@ -1,7 +1,7 @@
 extends Node2D
 
-export var width := 1000
-export var height := 1000
+export var width := 300
+export var height := 300
 var openSimplexNoise := OpenSimplexNoise.new()
 onready var Ground = $Ground
 onready var Grass = $Grass
@@ -198,6 +198,9 @@ func create_tree(loc,biome):
 		get_parent().map["tree"][id] = {"l":loc,"h":8,"b":biome}
 		_Tree.set_cellv(loc,0)
 		decoration_locations.append(loc)
+		decoration_locations.append(loc + Vector2(1,0))
+		decoration_locations.append(loc + Vector2(0,-1))
+		decoration_locations.append(loc + Vector2(1,-1))
 		
 func create_stump(loc,biome):
 	var id = uuid.v4()
@@ -205,6 +208,9 @@ func create_stump(loc,biome):
 		get_parent().map["stump"][id] = {"l":loc,"h":3,"b":biome}
 		Stump.set_cellv(loc,0)
 		decoration_locations.append(loc)
+		decoration_locations.append(loc + Vector2(1,0))
+		decoration_locations.append(loc + Vector2(0,-1))
+		decoration_locations.append(loc + Vector2(1,-1))
 	
 func create_log(loc,biome):
 	var id = uuid.v4()
@@ -212,6 +218,9 @@ func create_log(loc,biome):
 		get_parent().map["log"][id] = {"l":loc,"h":1,"b":biome}
 		Log.set_cellv(loc,0)
 		decoration_locations.append(loc)
+		decoration_locations.append(loc + Vector2(1,0))
+		decoration_locations.append(loc + Vector2(0,-1))
+		decoration_locations.append(loc + Vector2(1,-1))
 		
 func create_ore_large(loc,biome):
 	var id = uuid.v4()
@@ -219,6 +228,9 @@ func create_ore_large(loc,biome):
 		get_parent().map["ore_large"][id] = {"l":loc,"h":8,"b":biome}
 		Ore_Large.set_cellv(loc,0)
 		decoration_locations.append(loc)
+		decoration_locations.append(loc + Vector2(1,0))
+		decoration_locations.append(loc + Vector2(0,-1))
+		decoration_locations.append(loc + Vector2(1,-1))
 
 func create_ore(loc,biome):
 	var id = uuid.v4()
@@ -226,6 +238,9 @@ func create_ore(loc,biome):
 		get_parent().map["ore"][id] = {"l":loc,"h":3,"b":biome}
 		Ore.set_cellv(loc,0)
 		decoration_locations.append(loc)
+		decoration_locations.append(loc + Vector2(1,0))
+		decoration_locations.append(loc + Vector2(0,-1))
+		decoration_locations.append(loc + Vector2(1,-1))
 
 func check_64x64(loc):
 	for tile_map in tile_maps:
