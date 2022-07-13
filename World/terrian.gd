@@ -180,7 +180,8 @@ func generate_flowers(locations,biome):
 	print("Building "+biome+" Flowers")
 	var NUM_FLOWER = int(locations.size()/100)
 	for _i in range(NUM_FLOWER):
-		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
+		var index = rng.randi_range(0, locations.size() - 1)
+		var location = locations[index]
 		create_flower(location,biome)
 			
 
