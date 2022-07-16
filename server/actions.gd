@@ -6,8 +6,10 @@ func action(player_id,message):
 			#print("updating movement")
 			#print(Server.players[player_id]["t"] < message["d"]["t"])
 			#if Server.players[player_id]["t"] < message["d"]["t"]:
-			Server.players[player_id]["p"] = message["d"]["p"]
-			Server.players[player_id]["d"] = message["d"]["d"]
+			var player = Server.world.get_node(str(player_id))
+			player.direction = message["d"]["d"]
+			#Server.players[player_id]["p"] = message["d"]["p"]
+			#Server.players[player_id]["d"] = message["d"]["d"]
 		("SWING"):
 			var response = Util.toMessage("ReceivedAction", message)
 			for id in Server.players.keys():

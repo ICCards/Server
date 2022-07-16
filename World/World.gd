@@ -29,6 +29,7 @@ var map = {
 	"desert":{},
 	"snow":{},
 	"tree":{},
+	"tall_grass":{},
 	"ore_large":{},
 	"ore":{},
 	"log":{},
@@ -37,26 +38,23 @@ var map = {
 	"tile": {},
 }
 
-
-
 func _ready():
 	set_meta('type',type)
 	Server.world = self
 
 func spawnPlayer(player_id,principal):
-	var player = Player.new()
+	var player = Player.instance()
 	player.name = str(player_id)
 	characters.shuffle()
-	player.data["character"] = characters.front()
 	rng.randomize()
-	var location = Vector2(rng.randi_range(0, 300), rng.randi_range(0, 300))
+	var location = spawnable_locations[rng.randi_range(0, spawnable_locations.size() - 1)]
 	#player.position = Ground.map_to_world(location)
 	add_child(player,true)
-	player.characters = characters.front()
+	player.character = characters.front()
 	player.principal = principal
 	player.player_id = player_id
-	player.location = spawnable_locations[rng.randi_range(0, spawnable_locations.size() - 1)]
-	player.direction = "DOWN"
+	player.position = Terrian.Ground.map_to_world(location)
+	#player.direction = "DOWN"
 	Server.players[player.player_id] = player.toJson()
 	print("spawned player " + str(player_id))
 	print(player.toJson())
