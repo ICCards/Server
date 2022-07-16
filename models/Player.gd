@@ -8,7 +8,7 @@ enum {
 	CHANGE_TILE
 }
 
-var direction = "DOWN"
+var direction
 var online = true
 var character
 var principal
@@ -34,7 +34,7 @@ func toJson():
 		"c":character,
 		"cp":companion,
 		"id":player_id,
-		"p":location,
+		"p":position,
 		"d":direction,
 		"t":time,
 		"principal":principal,
@@ -42,16 +42,30 @@ func toJson():
 	}
 
 func movement_state(delta):
-	input_vector = Vector2.ZERO
-	match direction:
-		"UP":
-			input_vector.y -= 1.0
-		"DOWN":
-			input_vector.y += 1.0
-		"LEFT":
-			input_vector.x -= 1.0
-		"RIGHT":
-			input_vector.x += 1.0
+	if Server.players.keys().has(player_id):
+		match direction:
+			"UP":
+				input_vector.y -= 1.0
+				move_player(delta)
+				Server.players[player_id]["d"] = direction	
+			"DOWN":
+				input_vector.y += 1.0
+				move_player(delta)
+				Server.players[player_id]["d"] = direction	
+			"LEFT":
+				input_vector.x -= 1.0
+				move_player(delta)
+				Server.players[player_id]["d"] = direction	
+			"RIGHT":
+				input_vector.x += 1.0
+				move_player(delta)
+				Server.players[player_id]["d"] = direction	
+			"IDLE":
+				input_vector = Vector2.ZERO
+				velocity = Vector2.ZERO
+				Server.players[player_id]["d"] = direction
+			
+func move_player(delta):
 	input_vector = input_vector.normalized()
 	if input_vector != Vector2.ZERO:
 		velocity += input_vector * ACCELERATION * delta
@@ -59,8 +73,9 @@ func movement_state(delta):
 	else:
 		velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
 	move_and_collide(velocity * MAX_SPEED)
-	Server.players[player_id]["p"] = position
-	Server.players[player_id]["d"] = direction
+	if Server.players.has(player_id):
+		Server.players[player_id]["p"] = position
+					
 
 func _on_Player_tree_entered():
 	pass
