@@ -21,13 +21,17 @@ var MAX_SPEED := 12.5
 var ACCELERATION := 6
 var FRICTION := 8
 var velocity := Vector2.ZERO
+var counter = -1
+var collisionMask = null
+
 func _ready():
 	pass
 
-func _process(_delta) -> void:
-	match state:
-		MOVEMENT:
-			movement_state(_delta)
+func _process(_delta):
+	pass
+#	match state:
+#		MOVEMENT:
+#			movement_state(_delta)
 			
 func toJson():
 	return {
@@ -40,42 +44,52 @@ func toJson():
 		"principal":principal,
 		"o":online
 	}
+	
+func input_update(input, game_state : Dictionary):
+	#calculate state of object for the given input
+	var vect = Vector2(0, 0)
 
-func movement_state(delta):
-	if Server.players.keys().has(player_id):
-		match direction:
-			"UP":
-				input_vector.y -= 1.0
-				move_player(delta)
-				Server.players[player_id]["d"] = direction	
-			"DOWN":
-				input_vector.y += 1.0
-				move_player(delta)
-				Server.players[player_id]["d"] = direction	
-			"LEFT":
-				input_vector.x -= 1.0
-				move_player(delta)
-				Server.players[player_id]["d"] = direction	
-			"RIGHT":
-				input_vector.x += 1.0
-				move_player(delta)
-				Server.players[player_id]["d"] = direction	
-			"IDLE":
-				input_vector = Vector2.ZERO
-				velocity = Vector2.ZERO
-				Server.players[player_id]["d"] = direction
-			
-func move_player(delta):
-	input_vector = input_vector.normalized()
-	if input_vector != Vector2.ZERO:
-		velocity += input_vector * ACCELERATION * delta
-		velocity = velocity.clamped(MAX_SPEED * delta)
+	if input.net_input[0]: #W
+		vect.y += 7
+
+	if input.net_input[1]: #A
+		vect.x += 7
+
+	if input.net_input[2]: #S
+		vect.y -= 7
+
+	if input.net_input[3]: #D
+		vect.x -= 7
+	if input.net_input[4]: #SPACE
+		counter = counter/2
+
+	#move_and_collide for "solid" stationary objects
+	var collision = move_and_collide(vect)
+	if collision:
+		vect = vect.slide(collision.normal)
+		move_and_collide(vect)
+		
+#reset object state to that in a given game_state, executed once per rollback 
+func reset_state(game_state : Dictionary):
+	#check if this object exists within the checked game_state
+	if game_state.has(name):
+		position.x = game_state[name]['x']
+		position.y = game_state[name]['y']
+		counter = game_state[name]['counter']
 	else:
-		velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
-	move_and_collide(velocity * MAX_SPEED)
-	if Server.players.has(player_id):
-		Server.players[player_id]["p"] = position
-					
+		free()
+
+
+func frame_start():
+	pass
+
+func frame_end():
+	pass
+
+
+func get_state():
+	#return dict of state variables to be stored in Frame_States
+	return {'x': position.x, 'y': position.y, 'counter': counter, 'collisionMask': collisionMask}
 
 func _on_Player_tree_entered():
 	pass
