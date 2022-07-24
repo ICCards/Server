@@ -71,10 +71,10 @@ func input_update(input, game_state : Dictionary):
 func reset_state(game_state : Dictionary):
 	pass
 	#check if this object exists within the checked game_state
-#	if game_state.has(name):
-#		position.x = game_state[name]['x']
-#		position.y = game_state[name]['y']
-#		counter = game_state[name]['counter']
+	if game_state.has(name):
+		position.x = game_state[name]['x']
+		position.y = game_state[name]['y']
+		counter = game_state[name]['counter']
 #	else:
 #		queue_free()
 

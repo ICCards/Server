@@ -169,6 +169,9 @@ func handle_input(): #get input, call child functions and run rollback if necess
 		local_input[3] = true
 		encoded_local_input += 8
 		print("Move Right")
+	if Input.is_key_pressed(KEY_SPACE):
+		local_input[4] = true
+		encoded_local_input += 16
 	if !Input.is_key_pressed(KEY_W) && !Input.is_key_pressed(KEY_A)  && !Input.is_key_pressed(KEY_S)  && !Input.is_key_pressed(KEY_D):
 		local_input[5] = true
 		encoded_local_input += 32
