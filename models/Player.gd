@@ -50,34 +50,33 @@ func input_update(input, game_state : Dictionary):
 	var vect = Vector2(0, 0)
 
 	if input.net_input[0]: #W
-		vect.y += 7
-
-	if input.net_input[1]: #A
-		vect.x += 7
-
-	if input.net_input[2]: #S
 		vect.y -= 7
 
-	if input.net_input[3]: #D
+	if input.net_input[1]: #A
 		vect.x -= 7
-	if input.net_input[4]: #SPACE
-		counter = counter/2
 
+	if input.net_input[2]: #S
+		vect.y += 7
+
+	if input.net_input[3]: #D
+		vect.x += 7
 	#move_and_collide for "solid" stationary objects
 	var collision = move_and_collide(vect)
 	if collision:
 		vect = vect.slide(collision.normal)
 		move_and_collide(vect)
+	print(position)	
 		
 #reset object state to that in a given game_state, executed once per rollback 
 func reset_state(game_state : Dictionary):
+	pass
 	#check if this object exists within the checked game_state
-	if game_state.has(name):
-		position.x = game_state[name]['x']
-		position.y = game_state[name]['y']
-		counter = game_state[name]['counter']
-	else:
-		free()
+#	if game_state.has(name):
+#		position.x = game_state[name]['x']
+#		position.y = game_state[name]['y']
+#		counter = game_state[name]['counter']
+#	else:
+#		queue_free()
 
 
 func frame_start():
