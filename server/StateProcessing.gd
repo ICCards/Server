@@ -21,4 +21,4 @@ func _physics_process(_delta):
 			world_state["players"][player].erase("t")
 		world_state["t"] = OS.get_system_time_msecs()
 		# Anti-cheat stuff and physics check here
-		#Server.updateState(world_state)
+		Server.updateState(world_state)

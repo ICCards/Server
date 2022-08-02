@@ -50,17 +50,17 @@ func spawnPlayer(player_id,principal):
 	rng.randomize()
 	var location = spawnable_locations[rng.randi_range(0, spawnable_locations.size() - 1)]
 	#player.position = Ground.map_to_world(location)
-	player.set_network_master(player_id)
+	#player.set_network_master(player_id)
 	$Players.add_child(player,true)
-	player.character = characters.front()
-	player.principal = principal
-	player.player_id = player_id
-	player.position = Terrian.Ground.map_to_world(location)
+	player.get_children()[0].character = characters.front()
+	player.get_children()[0].principal = principal
+	player.get_children()[0].player_id = player_id
+	player.get_children()[0].position = Terrian.Ground.map_to_world(location)
 	#player.direction = "DOWN"
-	Server.players[player.player_id] = player.toJson()
+	Server.players[player_id] = player.get_children()[0].toJson()
 	print("spawned player " + str(player_id))
-	print(player.toJson())
-	Server._spawnPlayer(player.toJson())
+	print(player.get_children()[0].toJson())
+	Server._spawnPlayer(player.get_children()[0].toJson())
 
 func _on_Node2D_area_entered(area:Area2D):
 	pass # Replace with function body.

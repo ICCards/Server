@@ -56,12 +56,18 @@ func _process(_delta):
 
 remote func input(data):
 	var player_id = get_tree().get_rpc_sender_id()
-	world.Players.thr_network_inputs(data)
+	var player = world.Players.get_node(str(player_id))
+	player.thr_network_inputs(data)
 		
 remote func login():
 	var player_id = get_tree().get_rpc_sender_id()
 	if not players.keys().has(player_id):
 		IC.principal(player_id)
+
+remote func login_test():
+	var player_id = get_tree().get_rpc_sender_id()
+	if not players.keys().has(player_id):
+		world.spawnPlayer(player_id,"j26ec-ix7zw-kiwcx-ixw6w-72irq-zsbyr-4t7fk-alils-u33an-kh6rk-7qe")		
 
 remote func get_map(key):
 	var player_id = get_tree().get_rpc_sender_id()
@@ -89,12 +95,9 @@ remote func get_map(key):
 #		for id in players.keys():
 #			ws.get_peer(id).put_packet(message)
 
-#func updateState(state):
-#	var data = {"d":state}
-#	var message = Util.toMessage("updateState",data)
-#	for id in players.keys():
-#		ws.get_peer(id).put_packet(message)
-#
+func updateState(state):
+	rpc_id(0, "updateState",state)
+
 func _spawnPlayer(data):
 	print("spawning")
 	print(data)

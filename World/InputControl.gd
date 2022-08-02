@@ -1,4 +1,4 @@
-extends YSort
+extends Node2D
 
 #amount of input delay in frames
 var input_delay = 5 
@@ -98,7 +98,7 @@ func thr_network_inputs(result): #thread function to process data from network
 					packet_arr.append(input_array[frame].encoded_local_input)
 					frame = (frame + 1)%256
 				for _x in range(packet_amount):
-					Server.rpc_id(0,"input",packet_arr)
+					Server.rpc_id(0,"input",packet_arr,name)
 
 func _ready():
 	#initialize arrays
@@ -125,7 +125,7 @@ func _physics_process(_delta):
 	if Input.is_key_pressed(KEY_ESCAPE):
 		game = Game.END
 		for _x in range(packet_amount):
-			Server.rpc_id(0,"input",[3]) #send game end signal to networked game
+			Server.rpc_id(0,"input",[3],name) #send game end signal to networked game
 	
 	if (input_received):
 		#if the oldest Frame_State in the queue uses a guess input, and the actual input for the oldest Frame_State has not arrived,
@@ -134,7 +134,7 @@ func _physics_process(_delta):
 			if input_arrival_array[state_queue[0].frame] == false:
 				input_received = false #wait until needed net input arrives
 				for _x in range(packet_amount):
-					Server.rpc_id(0,"input",[1, state_queue[0].frame, (frame_num + input_delay)%256]) #send request for needed input
+					Server.rpc_id(0,"input",[1, state_queue[0].frame, (frame_num + input_delay)%256],name) #send request for needed input
 				status = "DELAY: Waiting for net input. Current frame_num: " + str(frame_num)
 			else:
 				status = "" 
@@ -144,7 +144,7 @@ func _physics_process(_delta):
 			handle_input()
 	elif (game == Game.PLAYING):#send request for needed inputs for past frames
 		for _x in range(packet_amount):
-			Server.rpc_id(0,"input",[1, state_queue[0].frame, (frame_num + input_delay)%256]) #send request for needed input
+			Server.rpc_id(0,"input",[1, state_queue[0].frame, (frame_num + input_delay)%256],name) #send request for needed input
 
 func handle_input(): #get input, call child functions and run rollback if necessary
 	var pre_game_state = null
@@ -185,7 +185,7 @@ func handle_input(): #get input, call child functions and run rollback if necess
 		packet_arr.append((frame_num + input_delay - i) % 256)
 		packet_arr.append(input_array[(frame_num + input_delay - i) % 256].encoded_local_input)
 	for _x in packet_amount:
-		Server.rpc_id(0,"input",packet_arr)
+		Server.rpc_id(0,"input",packet_arr,name)
 	var current_input = input_array[frame_num].duplicate() #use duplicate so that networking thread safely can work on input_array
 	
 	#if the net input for the current frame has not arrived, use a guess instead
