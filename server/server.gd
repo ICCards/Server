@@ -53,6 +53,10 @@ func _process(_delta):
 	if ws.is_listening():
 		pass
 	ws.poll()
+	
+remote func move(id,position,direction):
+	var player = world.Players.get_node(id)
+	player.move(position,direction)
 
 remote func input(data):
 	var player_id = get_tree().get_rpc_sender_id()
@@ -73,27 +77,6 @@ remote func get_map(key):
 	var player_id = get_tree().get_rpc_sender_id()
 	var value = world.map[key]
 	rpc_id(player_id, "load_map",value)
-				
-#func _connected(player_id, proto):
-#	print("Player: " + str(player_id) + " Connected")
-#	var data = {"d":player_id}
-#	var message = Util.toMessage("ID",data)
-#	ws.get_peer(player_id).put_packet(message)
-#
-#func _close_request(player_id, code, reason):
-#	# This is called when a client notifies that it wishes to close the connection,
-#	# providing a reason string and close code.
-#	print("Client %d disconnecting with code: %d, reason: %s" % [player_id, code, reason])
-#
-#func _disconnected(player_id, was_clean = false):
-#	print("Player: " + str(player_id) + " Disconnected")
-#	if world.has_node(str(player_id)):
-#		world.get_node(str(player_id)).queue_free()
-#		players.erase(player_id)
-#		var data = {"d":player_id}
-#		var message = Util.toMessage("DespawnPlayer",data)
-#		for id in players.keys():
-#			ws.get_peer(id).put_packet(message)
 
 func updateState(state):
 	rpc_id(0, "updateState",state)

@@ -48,35 +48,35 @@ func toJson():
 func input_update(input, game_state : Dictionary):
 	#calculate state of object for the given input
 	var vect = Vector2(0, 0)
-
 	if input.net_input[0]: #W
 		vect.y -= 7
-
+		direction = "UP"
 	if input.net_input[1]: #A
 		vect.x -= 7
-
+		direction = "LEFT"
 	if input.net_input[2]: #S
 		vect.y += 7
-
+		direction = "DOWN"
 	if input.net_input[3]: #D
 		vect.x += 7
+		direction = "RIGHT"
 	#move_and_collide for "solid" stationary objects
 	var collision = move_and_collide(vect)
 	if collision:
 		vect = vect.slide(collision.normal)
 		move_and_collide(vect)
-	print(position)	
+	Server.rpc_id(0,"move",name,vect,direction)
+	
 		
 #reset object state to that in a given game_state, executed once per rollback 
 func reset_state(game_state : Dictionary):
-	pass
 	#check if this object exists within the checked game_state
 	if game_state.has(name):
 		position.x = game_state[name]['x']
 		position.y = game_state[name]['y']
-		counter = game_state[name]['counter']
-#	else:
-#		queue_free()
+		Server.rpc_id(0,"move",name,position,direction)
+	else:
+		queue_free()
 
 
 func frame_start():
