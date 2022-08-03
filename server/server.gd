@@ -101,7 +101,7 @@ func updateState(state):
 func _spawnPlayer(data):
 	print("spawning")
 	print(data)
-	rpc_id(data["id"], "spawn_player",data)
+	rpc_id(0, "spawn_player",data)
 #
 #func _on_data(player_id):
 #	var pkt = ws.get_peer(player_id).get_packet()

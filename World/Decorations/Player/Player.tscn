@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://models/Player.gd" type="Script" id=1]
 [ext_resource path="res://World/InputControl.gd" type="Script" id=2]
+[ext_resource path="res://icon.png" type="Texture" id=3]
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 1, 1 )
@@ -87,6 +88,9 @@ light_mask = 0
 position = Vector2( 0, 9.91821e-05 )
 rotation = -1.5708
 shape = SubResource( 11 )
+
+[node name="Sprite" type="Sprite" parent="Player"]
+texture = ExtResource( 3 )
 
 [connection signal="body_entered" from="Player/PickupZone" to="Player/PickupZone" method="_on_PickupZone_body_entered"]
 [connection signal="body_exited" from="Player/PickupZone" to="Player/PickupZone" method="_on_PickupZone_body_exited"]
