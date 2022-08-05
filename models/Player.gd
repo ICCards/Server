@@ -28,10 +28,7 @@ func _ready():
 	pass
 
 func _process(_delta):
-	pass
-#	match state:
-#		MOVEMENT:
-#			movement_state(_delta)
+	Server.players[player_id] = toJson()
 			
 func toJson():
 	return {
@@ -65,7 +62,7 @@ func input_update(input, game_state : Dictionary):
 	if collision:
 		vect = vect.slide(collision.normal)
 		move_and_collide(vect)
-	Server.rpc_id(0,"move",name,vect,direction)
+	#Server.rpc_id(0,"move",name,vect,direction)
 	
 		
 #reset object state to that in a given game_state, executed once per rollback 
@@ -74,7 +71,7 @@ func reset_state(game_state : Dictionary):
 	if game_state.has(name):
 		position.x = game_state[name]['x']
 		position.y = game_state[name]['y']
-		Server.rpc_id(0,"move",name,position,direction)
+		#Server.rpc_id(0,"move",name,position,direction)
 	else:
 		queue_free()
 

@@ -87,7 +87,6 @@ func thr_network_inputs(result): #thread function to process data from network
 					if game == Game.WAITING:
 						game = Game.PLAYING
 				new_input = false
-			
 			1: #request for input received
 				var frame = result[1]
 				var packet_arr = [0]

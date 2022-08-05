@@ -77,6 +77,14 @@ remote func get_map(key):
 	var player_id = get_tree().get_rpc_sender_id()
 	var value = world.map[key]
 	rpc_id(player_id, "load_map",value)
+	
+remote func FetchServerTime(client_time):
+	var player_id = get_tree().get_rpc_sender_id()
+	rpc_id(player_id, "ReturnServerTime", OS.get_system_time_msecs(),client_time)
+
+remote func DetermineLatency(client_time):
+	var player_id = get_tree().get_rpc_sender_id()
+	rpc_id(player_id, "ReturnLatency", client_time)
 
 func updateState(state):
 	rpc_id(0, "updateState",state)
