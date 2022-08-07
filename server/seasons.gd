@@ -72,7 +72,7 @@ func start_day_timer() -> void:
 	
 	
 func start_night_timer() -> void:
-	night_timer.start()
+	#night_timer.start()
 	yield(night_timer, "timeout")
 	Server.day_num += 1
 	Server.day = true

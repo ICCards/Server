@@ -11,16 +11,18 @@ var day_num = 1
 var season = "Spring"
 var time_elapsed = 0
 var delta
+var input_data = null
+
+const LOG_FILE_DIRECTORY = 'user://detailed_logs'
+
+var logging_enabled := true
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	get_tree().connect("network_peer_connected",self,"_on_network_peer_connected")
 	get_tree().connect("network_peer_disconnected", self, "_on_network_peer_disconnected")
 	get_tree().connect("server_disconnected", self, "_on_server_disconnected")
-	SyncManager.connect("sync_started",self,"_on_SyncManager_sync_started")
-	SyncManager.connect("sync_stopped",self,"_on_SyncManager_sync_stopped")
-	SyncManager.connect("sync_lost",self,"_on_SyncManager_sync_lost")
-	SyncManager.connect("sync_regained",self,"_on_SyncManager_sync_regained")
-	SyncManager.connect("sync_error",self,"_on_SyncManager_sync_error")
 	
 	var err = ws.listen(port,PoolStringArray(), true)
 	print("Connecting...")
@@ -32,72 +34,65 @@ func _ready():
 	print("Listing on port %d..." % port)
 
 func _on_network_peer_connected(player_id):
-	print(player_id+" Connected")
-	SyncManager.add_peer(player_id)
-	print("starting")
-	yield(get_tree().create_timer(2.0),"timeout")
-	SyncManager.start()
+	pass
+#	SyncManager.add_peer(player_id)
+#	if get_tree().is_network_server():
+#		print("Starting...")
+#		# Give a little time to get ping data.
+#		yield(get_tree().create_timer(2.0), "timeout")
+#		SyncManager.start()
+
 
 func _on_network_peer_disconnected(player_id):
-	print(player_id+" Disconnected")
-	SyncManager.remove_peer(player_id)
+	print(str(player_id)+" Disconnected")
 	
 func _on_server_disconnected():
 	_on_network_peer_disconnected(1)
-
-func _on_SyncManager_sync_started():
-	print("started")		
-	
-func _on_SyncManager_sync_stopped():
-	pass	
-
-func _on_SyncManager_sync_lost():
-	print("sync lost")	
-	
-func _on_SyncManager_sync_regained():
-	print("sync regained")
-
-func _on_SyncManager_sync_error(msg):
-	print("Fatal sync error: "+msg)			
 
 func _process(_delta):
 	if ws.is_listening():
 		pass
 	ws.poll()
+	
+remote func move(id,position,direction):
+	var player = world.Players.get_node(id)
+	player.move(position,direction)
 
-#func _connected(player_id, proto):
-#	print("Player: " + str(player_id) + " Connected")
-#	var data = {"d":player_id}
-#	var message = Util.toMessage("ID",data)
-#	ws.get_peer(player_id).put_packet(message)
-#
-#func _close_request(player_id, code, reason):
-#	# This is called when a client notifies that it wishes to close the connection,
-#	# providing a reason string and close code.
-#	print("Client %d disconnecting with code: %d, reason: %s" % [player_id, code, reason])
-#
-#func _disconnected(player_id, was_clean = false):
-#	print("Player: " + str(player_id) + " Disconnected")
-#	if world.has_node(str(player_id)):
-#		world.get_node(str(player_id)).queue_free()
-#		players.erase(player_id)
-#		var data = {"d":player_id}
-#		var message = Util.toMessage("DespawnPlayer",data)
-#		for id in players.keys():
-#			ws.get_peer(id).put_packet(message)
+remote func input(data):
+	var player_id = get_tree().get_rpc_sender_id()
+	var player = world.Players.get_node(str(player_id))
+	player.thr_network_inputs(data)
+		
+remote func login():
+	var player_id = get_tree().get_rpc_sender_id()
+	if not players.keys().has(player_id):
+		IC.principal(player_id)
 
-#func updateState(state):
-#	var data = {"d":state}
-#	var message = Util.toMessage("updateState",data)
-#	for id in players.keys():
-#		ws.get_peer(id).put_packet(message)
-#
-#func _spawnPlayer(data):
-#	print("spawning")
-#	print(data)
-#	var value = {"d":data}
-#	var message = Util.toMessage("SpawnPlayer",value)
-#	ws.get_peer(data["id"]).put_packet(message)
+remote func login_test():
+	var player_id = get_tree().get_rpc_sender_id()
+	if not players.keys().has(player_id):
+		world.spawnPlayer(player_id,"j26ec-ix7zw-kiwcx-ixw6w-72irq-zsbyr-4t7fk-alils-u33an-kh6rk-7qe")		
+
+remote func get_map(key):
+	var player_id = get_tree().get_rpc_sender_id()
+	var value = world.map[key]
+	rpc_id(player_id, "load_map",value)
+	
+remote func FetchServerTime(client_time):
+	var player_id = get_tree().get_rpc_sender_id()
+	rpc_id(player_id, "ReturnServerTime", OS.get_system_time_msecs(),client_time)
+
+remote func DetermineLatency(client_time):
+	var player_id = get_tree().get_rpc_sender_id()
+	rpc_id(player_id, "ReturnLatency", client_time)
+
+func updateState(state):
+	rpc_id(0, "updateState",state)
+
+func _spawnPlayer(data):
+	print("spawning")
+	print(data)
+	rpc_id(0, "spawn_player",data)
 #
 #func _on_data(player_id):
 #	var pkt = ws.get_peer(player_id).get_packet()
@@ -130,12 +125,3 @@ func _process(_delta):
 #		("action"):
 #			Actions.action(player_id,result)
 
-#Client:
-#
-#var client = WebSocketClient.new();
-#
-#var url = "ws://127.0.0.1:" + str(PORT) # You use "ws://" at the beginning of the address for WebSocket connections
-#
-#var error = client.connect_to_url(url, PoolStringArray(), true);
-#
-#get_tree().set_network_peer(client);

@@ -1,8 +1,9 @@
 extends Node2D
 
 #onready var TreeObject = preload("res://World/Decorations/Tree/TreeObject.tscn")
-onready var Player = preload("res://World/Decorations/Player/Player.tscn")
+onready var Controller = preload("res://World/Decorations/Player/Player.tscn")
 onready var Terrian = $Terrian
+onready var Players = $Players
 
 var _uuid = preload("res://helpers/UUID.gd")
 onready var uuid = _uuid.new()
@@ -43,19 +44,22 @@ func _ready():
 	Server.world = self
 
 func spawnPlayer(player_id,principal):
-	var player = Player.instance()
+	var controller = Controller.instance()
+	var player = controller.get_children()[0]
+	controller.name = str(player_id)
 	player.name = str(player_id)
 	characters.shuffle()
 	rng.randomize()
 	var location = spawnable_locations[rng.randi_range(0, spawnable_locations.size() - 1)]
 	#player.position = Ground.map_to_world(location)
-	add_child(player,true)
+	#player.set_network_master(player_id)
+	$Players.add_child(controller,true)
 	player.character = characters.front()
 	player.principal = principal
 	player.player_id = player_id
 	player.position = Terrian.Ground.map_to_world(location)
 	#player.direction = "DOWN"
-	Server.players[player.player_id] = player.toJson()
+	Server.players[player_id] = player.toJson()
 	print("spawned player " + str(player_id))
 	print(player.toJson())
 	Server._spawnPlayer(player.toJson())
