@@ -9,6 +9,7 @@ func _ready():
 	pass
 
 func principal(player_id):
+	print("getting Principal for "+str(player_id))
 	var http_request = HTTPRequest.new()
 	add_child(http_request)
 	rng.randomize()

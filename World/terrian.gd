@@ -1,7 +1,7 @@
 extends Node2D
 
-export var width := 1000
-export var height := 1000
+export var width := 300
+export var height := 300
 var openSimplexNoise := OpenSimplexNoise.new()
 onready var Ground = $Ground
 onready var Grass = $Grass
@@ -11,13 +11,13 @@ onready var Log = $Log
 onready var Ore = $Ore
 onready var Ore_Large = $Ore_Large
 onready var Flower = $Flower
-export var NUM_GRASS_BUNCHES = 500
-export var NUM_TREES = 1000
-export var NUM_LOGS = 1000
-export var NUM_STUMPS = 1000
-export var NUM_ORE = 1000
-export var NUM_ORE_LARGE = 1000
-export var NUM_FLOWER = 500
+#export var NUM_GRASS_BUNCHES = 500
+#export var NUM_TREES = 1000
+#export var NUM_LOGS = 1000
+#export var NUM_STUMPS = 1000
+#export var NUM_ORE = 1000
+#export var NUM_ORE_LARGE = 1000
+#export var NUM_FLOWER = 500
 export var MAX_GRASS_BUNCH_SIZE = 500
 var rng = RandomNumberGenerator.new()
 onready var tile_maps = [_Tree,Stump,Log,Ore_Large,Ore,Flower]
@@ -32,29 +32,27 @@ var decoration_locations = []
 
 func _ready() -> void:
 	randomize()
-	temperature = generate_island_map(5,300)
-	moisture = generate_island_map(5,300)
-	altittude = generate_island_map(5,150)
+	temperature = generate_map(5,300)
+	moisture = generate_map(5,300)
+	altittude = generate_map(5,150)
 	build_terrian()
+	generate_trees(get_parent().map["snow"].values(),"snow")
+	generate_trees(get_parent().map["forest"].values(),"forest")
+	generate_trees(get_parent().map["desert"].values(),"desert")
+	generate_grass_bunches(get_parent().map["plains"].values(),"plains")
+	generate_grass_bunches(get_parent().map["snow"].values(),"snow")
+	generate_ores(get_parent().map["snow"].values(),"snow")
+	generate_ores(get_parent().map["desert"].values(),"desert")
+	generate_ores(get_parent().map["dirt"].values(),"dirt")
+	generate_flowers(get_parent().map["forest"].values(),"forest")
+	generate_flowers(get_parent().map["plains"].values(),"plains")
 #	generate_grass_bunches()
 #	generate_trees()
 #	generate_ores()
 #	generate_flowers()
 	print("done")
-
-func generate_map(octaves,period):
-	var grid = {}
-	openSimplexNoise.seed = randi()
-	openSimplexNoise.octaves = octaves
-	openSimplexNoise.period = period
-	for x in width:
-		for y in height:
-			#var rand := floor((abs(openSimplexNoise.get_noise_2d(x,y)))*11)
-			var value = openSimplexNoise.get_noise_2d(x,y)
-			grid[Vector2(x,y)] = value
-	return grid
 	
-func generate_island_map(octaves,period):
+func generate_map(octaves,period):
 	var grid = {}
 	openSimplexNoise.seed = randi()
 	openSimplexNoise.octaves = octaves
@@ -93,132 +91,156 @@ func build_terrian():
 				get_parent().map["beach"][id] = (Vector2(x,y))
 			#Biomes	
 			elif between(alt,-1.4,0.8):
-				Ground.set_cell(x,y, 0)
 				#plains
 				if between(moist,0,0.4) and between(temp,0.2,0.6):
 					Ground.set_cell(x,y, 1)
 					get_parent().map["plains"][id] = (Vector2(x,y))
+					#generate_trees(get_parent().map["plains"].values())
 				#forest
-				if between(moist,0.35,0.85) and temp > 0.6:
+				elif between(moist,0.5,0.85) and temp > 0.6:
 					Ground.set_cell(x,y, 2)
 					get_parent().map["forest"][id] = (Vector2(x,y))
+					#generate_trees(get_parent().map["forest"].values())
 				#desert	
-				if temp > 0.7 and moist < 0.4:
+				elif temp > 0.6 and moist < 0.5:
 					Ground.set_cell(x,y, 5)
 					get_parent().map["desert"][id] = (Vector2(x,y))
+					#generate_trees(get_parent().map["desert"].values())
 				#snow	
-				if temp < 0.2:
+				elif temp < 0.2:
 					Ground.set_cell(x,y, 6)
 					get_parent().map["snow"][id] = (Vector2(x,y))
+					#generate_trees(get_parent().map["snow"].values())
+				else:
+					#dirt
+					Ground.set_cell(x,y, 0)
+					get_parent().map["dirt"][id] = (Vector2(x,y))
 			else:
-				Ground.set_cell(x,y, 0)
+				pass
+				#Ground.set_cell(x,y, 0)
 				get_parent().map["dirt"][id] = (Vector2(x,y))
+				#print(get_parent().map["dirt"])
 			
-func generate_grass_bunches():
+func generate_grass_bunches(locations,biome):
+	var NUM_GRASS_BUNCHES = int(locations.size()/100)
 	for _i in range(NUM_GRASS_BUNCHES):
-		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
-		if isValidGrassTile(location):
-			create_grass_bunch(location)
+		var index = rng.randi_range(0, locations.size() - 1)
+		var location = locations[index]
+		create_grass_bunch(location,biome)
+			
 
-func create_grass_bunch(loc):
+func create_grass_bunch(loc,biome):
 	rng.randomize()
 	var randomNum = rng.randi_range(1, MAX_GRASS_BUNCH_SIZE)
 	for _i in range(randomNum):
 		loc += Vector2(rng.randi_range(-1, 1), rng.randi_range(-1, 1))
-		if isValidGrassTile(loc):
+		if isValidPosition(loc):
 			var id = uuid.v4()
-			get_parent().map["tall_grass"][id] = {"l":loc,"h":5}
+			get_parent().map["tall_grass"][id] = {"l":loc,"h":5,"b":biome}
 			Grass.set_cellv(loc,0)
+			decoration_locations.append(loc)
 			
-func generate_trees():
+func generate_trees(locations,biome):
+	print("Building "+biome+" Trees")
+	var NUM_TREES = int(locations.size()/100)
+	var NUM_STUMPS = int(locations.size()/120)
+	var NUM_LOGS = int(locations.size()/140)
+	print(NUM_TREES)
+	print(NUM_STUMPS)
+	print(NUM_LOGS)
 	for _i in range(NUM_TREES):
-		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
-		if isValidTreeTile(location):
-			create_tree(location)
+		var index = rng.randi_range(0, locations.size() - 1)
+		var location = locations[index]
+		#print(location)
+		create_tree(location,biome)
 	for _i in range(NUM_STUMPS):
-		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
-		if isValidTreeTile(location):
-			create_stump(location)
+		var index = rng.randi_range(0, locations.size() - 1)
+		var location = locations[index]
+		create_stump(location,biome)
 	for _i in range(NUM_LOGS):
-		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
-		if isValidTreeTile(location):
-			create_log(location)
+		var index = rng.randi_range(0, locations.size() - 1)
+		var location = locations[index]
+		create_log(location,biome)
 
-func generate_ores():
+func generate_ores(locations,biome):
+	var NUM_ORE_LARGE = int(locations.size()/100)
+	var NUM_ORE = int(locations.size()/120)
 	for _i in range(NUM_ORE_LARGE):
-		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
-		if isValidOreTile(location):
-			create_ore_large(location)
-	for _i in range(NUM_ORE):
-		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
-		if isValidOreTile(location):
-			create_ore(location)
+		var index = rng.randi_range(0, locations.size() - 1)
+		var location = locations[index]
+		create_ore_large(location,biome)
 			
-func generate_flowers():
-	for _i in range(NUM_FLOWER):
-		var location = Vector2(rng.randi_range(0, width), rng.randi_range(0, height))
-		if isValidTreeTile(location):
-			create_flower(location)
+	for _i in range(NUM_ORE):
+		var index = rng.randi_range(0, locations.size() - 1)
+		var location = locations[index]
+		create_ore(location,biome)
+			
 
-func create_flower(loc):
+func generate_flowers(locations,biome):
+	print("Building "+biome+" Flowers")
+	var NUM_FLOWER = int(locations.size()/100)
+	for _i in range(NUM_FLOWER):
+		var index = rng.randi_range(0, locations.size() - 1)
+		var location = locations[index]
+		create_flower(location,biome)
+			
+
+func create_flower(loc,biome):
 	var id = uuid.v4()
-	if check_loc(loc) and isValidPosition(loc):
-		get_parent().map["flower"][id] = {"l":loc,"h":5}
+	if isValidPosition(loc):
+		get_parent().map["flower"][id] = {"l":loc,"h":5, "b":biome}
 		Flower.set_cellv(loc,0)
 		decoration_locations.append(loc)
 
-func create_tree(loc):
+func create_tree(loc,biome):
 	var id = uuid.v4()
 	if check_64x64(loc) and isValidPosition(loc):
-		get_parent().map["tree"][id] = {"l":loc,"h":8}
+		get_parent().map["tree"][id] = {"l":loc,"h":8,"b":biome}
 		_Tree.set_cellv(loc,0)
 		decoration_locations.append(loc)
+		decoration_locations.append(loc + Vector2(1,0))
+		decoration_locations.append(loc + Vector2(0,-1))
+		decoration_locations.append(loc + Vector2(1,-1))
 		
-func create_stump(loc):
+func create_stump(loc,biome):
 	var id = uuid.v4()
 	if check_64x64(loc) and isValidPosition(loc):
-		get_parent().map["stump"][id] = {"l":loc,"h":3}
+		get_parent().map["stump"][id] = {"l":loc,"h":3,"b":biome}
 		Stump.set_cellv(loc,0)
 		decoration_locations.append(loc)
+		decoration_locations.append(loc + Vector2(1,0))
+		decoration_locations.append(loc + Vector2(0,-1))
+		decoration_locations.append(loc + Vector2(1,-1))
 	
-func create_log(loc):
+func create_log(loc,biome):
 	var id = uuid.v4()
 	if check_64x64(loc) and isValidPosition(loc):
-		get_parent().map["log"][id] = {"l":loc,"h":1}
+		get_parent().map["log"][id] = {"l":loc,"h":1,"b":biome}
 		Log.set_cellv(loc,0)
 		decoration_locations.append(loc)
+		decoration_locations.append(loc + Vector2(1,0))
+		decoration_locations.append(loc + Vector2(0,-1))
+		decoration_locations.append(loc + Vector2(1,-1))
 		
-func create_ore_large(loc):
+func create_ore_large(loc,biome):
 	var id = uuid.v4()
 	if check_64x64(loc) and isValidPosition(loc):
-		get_parent().map["ore_large"][id] = {"l":loc,"h":8}
+		get_parent().map["ore_large"][id] = {"l":loc,"h":8,"b":biome}
 		Ore_Large.set_cellv(loc,0)
 		decoration_locations.append(loc)
+		decoration_locations.append(loc + Vector2(1,0))
+		decoration_locations.append(loc + Vector2(0,-1))
+		decoration_locations.append(loc + Vector2(1,-1))
 
-func create_ore(loc):
+func create_ore(loc,biome):
 	var id = uuid.v4()
 	if check_64x64(loc) and isValidPosition(loc):
-		get_parent().map["ore"][id] = {"l":loc,"h":3}
+		get_parent().map["ore"][id] = {"l":loc,"h":3,"b":biome}
 		Ore.set_cellv(loc,0)
 		decoration_locations.append(loc)
-
-func isValidGrassTile(position):
-	if Ground.get_cellv(position) == 1 or Ground.get_cellv(position) == 2:
-		return true
-	else: 
-		return false
-		
-func isValidTreeTile(position):
-	if Ground.get_cellv(position) == 1 or Ground.get_cellv(position) == 2:
-		return true
-	else: 
-		return false
-
-func isValidOreTile(position):
-	if Ground.get_cellv(position) == 0:
-		return true
-	else: 
-		return false
+		decoration_locations.append(loc + Vector2(1,0))
+		decoration_locations.append(loc + Vector2(0,-1))
+		decoration_locations.append(loc + Vector2(1,-1))
 
 func check_64x64(loc):
 	for tile_map in tile_maps:
@@ -234,12 +256,6 @@ func isValidPosition(loc):
 		return false
 	else:
 		return true
-		
-func check_loc(loc):
-	for tile_map in tile_maps:
-		if not tile_map.get_cellv(loc) == -1:
-			return false
-	return true
 
 func between(val, start, end):
 	if start <= val and val < end:
