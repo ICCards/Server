@@ -3,7 +3,7 @@ extends Node2D
 #amount of input delay in frames
 var input_delay = 5 
 #number of frame states to save in order to implement rollback (max amount of frames able to rollback)
-var rollback = 7 
+var rollback = 60 
 
 var frame_num = 0 #ranges between 0-255 per circular input array cycle (cycle is every 256 frames)
 

@@ -1,0 +1,45 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://World/Decorations/Nature/Trees/DesertTreeObject.gd" type="Script" id=2]
+
+[sub_resource type="RectangleShape2D" id=14]
+
+[sub_resource type="RectangleShape2D" id=13]
+extents = Vector2( 14.1111, 18.6754 )
+
+[node name="DesertTreeObject" type="Node2D"]
+scale = Vector2( 2, 2 )
+script = ExtResource( 2 )
+
+[node name="MovementCollisionBox" type="StaticBody2D" parent="."]
+position = Vector2( 3.33333, -25.5556 )
+
+[node name="movementCollisionBox" type="CollisionShape2D" parent="MovementCollisionBox"]
+position = Vector2( -3.33333, 27.5556 )
+rotation = -1.5708
+shape = SubResource( 14 )
+
+[node name="TreeHurtbox" type="Area2D" parent="."]
+position = Vector2( 0, -31 )
+collision_layer = 8
+collision_mask = 0
+
+[node name="treeHurtBox" type="CollisionShape2D" parent="TreeHurtbox"]
+position = Vector2( 0, 32 )
+rotation = -1.5708
+shape = SubResource( 13 )
+
+[node name="TreeTopArea" type="Area2D" parent="."]
+position = Vector2( 0, -11 )
+collision_layer = 4096
+collision_mask = 0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="TreeTopArea"]
+visible = false
+polygon = PoolVector2Array( -5, -1, 8, -1, 6, -20, 23, -22, 27, -31, 18, -43, 38, -49, 24, -66, 4, -61, -16, -68, -32, -59, -16, -48, -24, -33, -17, -25, -10, -30, -5, -21 )
+
+[node name="Timer" type="Timer" parent="."]
+
+[connection signal="area_entered" from="TreeHurtbox" to="." method="_on_TreeHurtbox_area_entered"]
+[connection signal="area_entered" from="TreeTopArea" to="." method="_on_TreeTopArea_area_entered"]
+[connection signal="area_exited" from="TreeTopArea" to="." method="_on_TreeTopArea_area_exited"]
