@@ -11,6 +11,16 @@ onready var Log = $Log
 onready var Ore = $Ore
 onready var Ore_Large = $Ore_Large
 onready var Flower = $Flower
+
+onready var TreeObject = preload("res://World/Decorations/Nature/Trees/TreeObject.tscn")
+onready var DesertTreeObject = preload("res://World/Decorations/Nature/Trees/DesertTreeObject.tscn")
+onready var BranchObject = preload("res://World/Decorations/Nature/Trees/TreeBranchObject.tscn")
+onready var StumpObject = preload("res://World/Decorations/Nature/Trees/TreeStumpObject.tscn")
+onready var OreObject = preload("res://World/Decorations/Nature/Ores/OreObjectLarge.tscn")
+onready var SmallOreObject = preload("res://World/Decorations/Nature/Ores/OreObjectSmall.tscn")
+onready var TallGrassObject = preload("res://World/Decorations/Nature/Grasses/TallGrassObject.tscn")
+onready var FlowerObject = preload("res://World/Decorations/Nature/Grasses/FlowerObject.tscn")
+
 #export var NUM_GRASS_BUNCHES = 500
 #export var NUM_TREES = 1000
 #export var NUM_LOGS = 1000
@@ -139,6 +149,11 @@ func create_grass_bunch(loc,biome):
 			get_parent().map["tall_grass"][id] = {"l":loc,"h":5,"b":biome}
 			Grass.set_cellv(loc,0)
 			decoration_locations.append(loc)
+			var object = TallGrassObject.instance()
+			object.biome = biome
+			object.name = id
+			object.position = Ground.map_to_world(loc) + Vector2(8, 32)
+			add_child(object,true)
 			
 func generate_trees(locations,biome):
 	print("Building "+biome+" Trees")
@@ -152,15 +167,15 @@ func generate_trees(locations,biome):
 		var index = rng.randi_range(0, locations.size() - 1)
 		var location = locations[index]
 		#print(location)
-		create_tree(location,biome)
+		create_tree(location,biome,"A")
 	for _i in range(NUM_STUMPS):
 		var index = rng.randi_range(0, locations.size() - 1)
 		var location = locations[index]
-		create_stump(location,biome)
+		create_stump(location,biome,"A")
 	for _i in range(NUM_LOGS):
 		var index = rng.randi_range(0, locations.size() - 1)
 		var location = locations[index]
-		create_log(location,biome)
+		create_log(location,biome,"A")
 
 func generate_ores(locations,biome):
 	var NUM_ORE_LARGE = int(locations.size()/100)
@@ -168,12 +183,12 @@ func generate_ores(locations,biome):
 	for _i in range(NUM_ORE_LARGE):
 		var index = rng.randi_range(0, locations.size() - 1)
 		var location = locations[index]
-		create_ore_large(location,biome)
+		create_ore_large(location,biome,"A")
 			
 	for _i in range(NUM_ORE):
 		var index = rng.randi_range(0, locations.size() - 1)
 		var location = locations[index]
-		create_ore(location,biome)
+		create_ore(location,biome,"A")
 			
 
 func generate_flowers(locations,biome):
@@ -191,8 +206,12 @@ func create_flower(loc,biome):
 		get_parent().map["flower"][id] = {"l":loc,"h":5, "b":biome}
 		Flower.set_cellv(loc,0)
 		decoration_locations.append(loc)
+		var object = FlowerObject.instance()
+		object.name = id
+		object.position = Ground.map_to_world(loc) + Vector2(16, 32)
+		add_child(object,true)
 
-func create_tree(loc,biome):
+func create_tree(loc,biome,variety):
 	var id = uuid.v4()
 	if check_64x64(loc) and isValidPosition(loc):
 		get_parent().map["tree"][id] = {"l":loc,"h":8,"b":biome}
@@ -201,8 +220,15 @@ func create_tree(loc,biome):
 		decoration_locations.append(loc + Vector2(1,0))
 		decoration_locations.append(loc + Vector2(0,-1))
 		decoration_locations.append(loc + Vector2(1,-1))
+		var object = TreeObject.instance()
+		object.biome = biome
+		object.health = 8
+		object.initialize(variety, loc)
+		object.position = Ground.map_to_world(loc) + Vector2(0, -8)
+		object.name = id
+		add_child(object,true)
 		
-func create_stump(loc,biome):
+func create_stump(loc,biome,variety):
 	var id = uuid.v4()
 	if check_64x64(loc) and isValidPosition(loc):
 		get_parent().map["stump"][id] = {"l":loc,"h":3,"b":biome}
@@ -211,8 +237,14 @@ func create_stump(loc,biome):
 		decoration_locations.append(loc + Vector2(1,0))
 		decoration_locations.append(loc + Vector2(0,-1))
 		decoration_locations.append(loc + Vector2(1,-1))
+		var object = StumpObject.instance()
+		object.health = 3
+		object.name = id
+		object.initialize(variety,loc)
+		object.position = Ground.map_to_world(loc) + Vector2(4,0)
+		add_child(object,true)
 	
-func create_log(loc,biome):
+func create_log(loc,biome,variety):
 	var id = uuid.v4()
 	if check_64x64(loc) and isValidPosition(loc):
 		get_parent().map["log"][id] = {"l":loc,"h":1,"b":biome}
@@ -221,8 +253,14 @@ func create_log(loc,biome):
 		decoration_locations.append(loc + Vector2(1,0))
 		decoration_locations.append(loc + Vector2(0,-1))
 		decoration_locations.append(loc + Vector2(1,-1))
+		var object = BranchObject.instance()
+		object.name = id
+		object.health = 1
+		object.initialize(variety,loc)
+		object.position = Ground.map_to_world(loc) + Vector2(16, 16)
+		add_child(object,true)
 		
-func create_ore_large(loc,biome):
+func create_ore_large(loc,biome,variety):
 	var id = uuid.v4()
 	if check_64x64(loc) and isValidPosition(loc):
 		get_parent().map["ore_large"][id] = {"l":loc,"h":8,"b":biome}
@@ -231,8 +269,14 @@ func create_ore_large(loc,biome):
 		decoration_locations.append(loc + Vector2(1,0))
 		decoration_locations.append(loc + Vector2(0,-1))
 		decoration_locations.append(loc + Vector2(1,-1))
+		var object = OreObject.instance()
+		object.health = 8
+		object.name = id
+		object.initialize(variety,loc)
+		object.position = Ground.map_to_world(loc) 
+		add_child(object,true)
 
-func create_ore(loc,biome):
+func create_ore(loc,biome,variety):
 	var id = uuid.v4()
 	if check_64x64(loc) and isValidPosition(loc):
 		get_parent().map["ore"][id] = {"l":loc,"h":3,"b":biome}
@@ -241,6 +285,12 @@ func create_ore(loc,biome):
 		decoration_locations.append(loc + Vector2(1,0))
 		decoration_locations.append(loc + Vector2(0,-1))
 		decoration_locations.append(loc + Vector2(1,-1))
+		var object = SmallOreObject.instance()
+		object.health = 3
+		object.name = id
+		object.initialize(variety,loc)
+		object.position = Ground.map_to_world(loc) + Vector2(16, 24)
+		add_child(object,true)
 
 func check_64x64(loc):
 	for tile_map in tile_maps:

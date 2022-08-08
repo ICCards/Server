@@ -7,9 +7,7 @@
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 1, 1 )
 
-[sub_resource type="CapsuleShape2D" id=11]
-radius = 8.00011
-height = 7.99978
+[sub_resource type="RectangleShape2D" id=11]
 
 [sub_resource type="CapsuleShape2D" id=9]
 radius = 39.746
@@ -84,18 +82,8 @@ collision_mask = 0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player/DetectPathUI/DetectStonePath"]
 shape = SubResource( 10 )
 
-[node name="Area2D" type="Area2D" parent="Player"]
-visible = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/Area2D"]
-light_mask = 0
-position = Vector2( 0, 9.91821e-05 )
-rotation = -1.5708
-shape = SubResource( 11 )
-
 [node name="Sprite" type="Sprite" parent="Player"]
 texture = ExtResource( 3 )
 
 [connection signal="body_entered" from="Player/PickupZone" to="Player/PickupZone" method="_on_PickupZone_body_entered"]
 [connection signal="body_exited" from="Player/PickupZone" to="Player/PickupZone" method="_on_PickupZone_body_exited"]
-[connection signal="area_entered" from="Player/Area2D" to="." method="_on_Area2D_area_entered"]
