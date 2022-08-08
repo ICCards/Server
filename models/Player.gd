@@ -58,10 +58,11 @@ func input_update(input, game_state : Dictionary):
 		vect.x += 7
 		direction = "RIGHT"
 	#move_and_collide for "solid" stationary objects
-	var collision = move_and_collide(vect)
-	if collision:
-		vect = vect.slide(collision.normal)
-		move_and_collide(vect)
+	move_and_collide(vect)
+#	var collision = move_and_collide(vect)
+#	if collision:
+#		vect = vect.slide(collision.normal)
+#		move_and_collide(vect)
 	#Server.rpc_id(0,"move",name,vect,direction)
 	
 		

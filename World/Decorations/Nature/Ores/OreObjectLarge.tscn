@@ -1,0 +1,80 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://World/Decorations/Nature/Ores/OreObjectLarge.gd" type="Script" id=14]
+
+[sub_resource type="CapsuleShape2D" id=9]
+radius = 21.2354
+height = 30.4705
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 23.2031, 34.5 )
+
+[sub_resource type="RectangleShape2D" id=11]
+extents = Vector2( 27.3943, 21.0175 )
+
+[sub_resource type="CapsuleShape2D" id=12]
+radius = 14.1176
+height = 7.05882
+
+[sub_resource type="RectangleShape2D" id=13]
+extents = Vector2( 28.2353, 27.0588 )
+
+[sub_resource type="RectangleShape2D" id=14]
+extents = Vector2( 25.8824, 10.8824 )
+
+[node name="OreObjectLarge" type="Node2D"]
+scale = Vector2( 0.85, 0.85 )
+script = ExtResource( 14 )
+
+[node name="BigMovementCollisionBox" type="StaticBody2D" parent="."]
+position = Vector2( -1, -28 )
+
+[node name="BigMovementBox" type="CollisionShape2D" parent="BigMovementCollisionBox"]
+position = Vector2( 1, 40.9412 )
+rotation = -1.5708
+shape = SubResource( 9 )
+
+[node name="BigHurtBox" type="Area2D" parent="."]
+position = Vector2( -1, -28 )
+collision_layer = 16
+collision_mask = 0
+
+[node name="bigHurtBox" type="CollisionShape2D" parent="BigHurtBox"]
+position = Vector2( 2.5, 40.7969 )
+rotation = -1.5708
+shape = SubResource( 1 )
+
+[node name="SmallHurtBox" type="Area2D" parent="."]
+position = Vector2( 1.49254, -55.2239 )
+collision_layer = 16
+collision_mask = 0
+
+[node name="smallHurtBox" type="CollisionShape2D" parent="SmallHurtBox"]
+position = Vector2( -1.49254, 70.518 )
+shape = SubResource( 11 )
+disabled = true
+
+[node name="SmallMovementCollisionBox" type="StaticBody2D" parent="."]
+position = Vector2( -64.7059, -57.6471 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SmallMovementCollisionBox"]
+position = Vector2( 64.7059, 75.2941 )
+rotation = -1.5708
+shape = SubResource( 12 )
+
+[node name="LargeOreOccupiedTiles" type="Area2D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LargeOreOccupiedTiles"]
+position = Vector2( 2.24394e-06, 1.68295e-06 )
+shape = SubResource( 13 )
+
+[node name="SmallOreOccupiedTiles" type="Area2D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SmallOreOccupiedTiles"]
+position = Vector2( 3.9269e-06, 16.7647 )
+shape = SubResource( 14 )
+
+[connection signal="area_entered" from="BigHurtBox" to="." method="_on_BigHurtBox_area_entered"]
+[connection signal="area_entered" from="SmallHurtBox" to="." method="_on_SmallHurtBox_area_entered"]

@@ -1,0 +1,43 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://World/Decorations/Nature/Ores/OreObjectSmall.gd" type="Script" id=7]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 19.4118, 18.2353 )
+
+[sub_resource type="CapsuleShape2D" id=7]
+radius = 14.1176
+height = 7.05882
+
+[sub_resource type="RectangleShape2D" id=8]
+
+[node name="SmallOreObject" type="Node2D"]
+scale = Vector2( 0.85, 0.85 )
+script = ExtResource( 7 )
+
+[node name="SmallHurtBox" type="Area2D" parent="."]
+visible = false
+position = Vector2( 1.49254, -55.2239 )
+collision_layer = 16
+collision_mask = 0
+
+[node name="smallHurtBox" type="CollisionShape2D" parent="SmallHurtBox"]
+position = Vector2( -0.904305, 45.2239 )
+shape = SubResource( 1 )
+
+[node name="SmallMovementCollisionBox" type="StaticBody2D" parent="."]
+position = Vector2( -64.7059, -57.6471 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SmallMovementCollisionBox"]
+position = Vector2( 64.7059, 49.4118 )
+rotation = -1.5708
+shape = SubResource( 7 )
+
+[node name="OccupiedTile" type="Area2D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OccupiedTile"]
+position = Vector2( 0, -7.05882 )
+shape = SubResource( 8 )
+
+[connection signal="area_entered" from="SmallHurtBox" to="." method="_on_SmallHurtBox_area_entered"]
