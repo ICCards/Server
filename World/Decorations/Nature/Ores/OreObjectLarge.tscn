@@ -2,9 +2,8 @@
 
 [ext_resource path="res://World/Decorations/Nature/Ores/OreObjectLarge.gd" type="Script" id=14]
 
-[sub_resource type="CapsuleShape2D" id=9]
-radius = 21.2354
-height = 30.4705
+[sub_resource type="RectangleShape2D" id=15]
+extents = Vector2( 10, 38.235 )
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 23.2031, 34.5 )
@@ -12,9 +11,7 @@ extents = Vector2( 23.2031, 34.5 )
 [sub_resource type="RectangleShape2D" id=11]
 extents = Vector2( 27.3943, 21.0175 )
 
-[sub_resource type="CapsuleShape2D" id=12]
-radius = 14.1176
-height = 7.05882
+[sub_resource type="RectangleShape2D" id=16]
 
 [sub_resource type="RectangleShape2D" id=13]
 extents = Vector2( 28.2353, 27.0588 )
@@ -30,9 +27,9 @@ script = ExtResource( 14 )
 position = Vector2( -1, -28 )
 
 [node name="BigMovementBox" type="CollisionShape2D" parent="BigMovementCollisionBox"]
-position = Vector2( 1, 40.9412 )
+position = Vector2( 2.765, 40.941 )
 rotation = -1.5708
-shape = SubResource( 9 )
+shape = SubResource( 15 )
 
 [node name="BigHurtBox" type="Area2D" parent="."]
 position = Vector2( -1, -28 )
@@ -60,7 +57,7 @@ position = Vector2( -64.7059, -57.6471 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SmallMovementCollisionBox"]
 position = Vector2( 64.7059, 75.2941 )
 rotation = -1.5708
-shape = SubResource( 12 )
+shape = SubResource( 16 )
 
 [node name="LargeOreOccupiedTiles" type="Area2D" parent="."]
 collision_mask = 0

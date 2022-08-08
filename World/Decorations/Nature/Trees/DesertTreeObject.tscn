@@ -2,9 +2,7 @@
 
 [ext_resource path="res://World/Decorations/Nature/Trees/DesertTreeObject.gd" type="Script" id=2]
 
-[sub_resource type="CapsuleShape2D" id=12]
-radius = 10.3333
-height = 7.3334
+[sub_resource type="RectangleShape2D" id=14]
 
 [sub_resource type="RectangleShape2D" id=13]
 extents = Vector2( 14.1111, 18.6754 )
@@ -19,7 +17,7 @@ position = Vector2( 3.33333, -25.5556 )
 [node name="movementCollisionBox" type="CollisionShape2D" parent="MovementCollisionBox"]
 position = Vector2( -3.33333, 27.5556 )
 rotation = -1.5708
-shape = SubResource( 12 )
+shape = SubResource( 14 )
 
 [node name="TreeHurtbox" type="Area2D" parent="."]
 position = Vector2( 0, -31 )

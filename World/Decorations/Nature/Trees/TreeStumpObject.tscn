@@ -2,9 +2,7 @@
 
 [ext_resource path="res://World/Decorations/Nature/Trees/TreeStumpObject.gd" type="Script" id=1]
 
-[sub_resource type="CapsuleShape2D" id=5]
-radius = 15.7639
-height = 10.6944
+[sub_resource type="RectangleShape2D" id=7]
 
 [sub_resource type="RectangleShape2D" id=6]
 extents = Vector2( 22.7083, 28.1439 )
@@ -19,7 +17,7 @@ position = Vector2( 0, -31 )
 [node name="movementCollisionBox" type="CollisionShape2D" parent="MovementCollisionBox"]
 position = Vector2( -3.33333, 29.8889 )
 rotation = -1.5708
-shape = SubResource( 5 )
+shape = SubResource( 7 )
 
 [node name="StumpHurtBox" type="Area2D" parent="."]
 visible = false
